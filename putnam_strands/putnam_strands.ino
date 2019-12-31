@@ -135,17 +135,14 @@ void loop(){
       ledMode(5);
        radiopacket[8] = 'F';    
     }
-
      else if (buf[0]=='G'){ //the letter sent from the button
       ledMode(6);
       radiopacket[8] = 'G';
-          
     } 
      else if (buf[0]=='H'){ //the letter sent from the button
       ledMode(7);
       radiopacket[8] = 'H';    
     }
-    
      else if (buf[0]=='I'){ //the letter sent from the button
       ledMode(8);
        radiopacket[8] = 'I';    
@@ -192,11 +189,11 @@ void loop(){
     }
          else if (buf[0]=='T'){ //the letter sent from the button
       ledMode(19);
-      radiopacket[8] = 'T';    
+      radiopacket[8] = 'T';CURRENTMODE = 19;
     }
          else if (buf[0]=='Z'){ //the letter sent from the button
       ledMode(20);
-      radiopacket[8] = 'Z';    
+      radiopacket[8] = 'Z';CURRENTMODE = 20;
     }
     digitalWrite(LED, LOW);
   }
@@ -299,6 +296,7 @@ void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
   for(int j=0; j<NUM_LEDS*2; j++)
   {
      if (CURRENTMODE != 17) break;
+     if (CURRENTMODE != 17) return;
       Position++; // = 0; //Position + Rate;
       for(int i=0; i<NUM_LEDS; i++) {
         // sine wave, 3 offset waves make a rainbow!
@@ -311,6 +309,8 @@ void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
       }
       
       FastLED.show();
+      if (CURRENTMODE != 17) break;
+      if (CURRENTMODE != 17) return;
       delay(WaveDelay);
   }
 }
