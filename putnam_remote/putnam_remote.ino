@@ -484,25 +484,23 @@ void loop() {
               radiopacket[0] = 'P';
               oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Cylon");
+              oled.print("Twinkle");
               oled.display(); 
             }
             if (x==1){ //button 2 sends button B command
               radiopacket[0] = 'Q';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Rainbow");
-              oled.setCursor(50,16);
-              oled.print("SOFT");
+              oled.print("Breath");
               oled.display(); 
             }
             if (x==2){ //button 3 sends button C command
               radiopacket[0] = 'R';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Rainbow");
+              oled.print("Running");
               oled.setCursor(50,16);
-              oled.print("TWINKLE");
+              oled.print("Lights");
               oled.display();  
             } 
 
@@ -510,9 +508,7 @@ void loop() {
               radiopacket[0] = 'H';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Rainbow");
-              oled.setCursor(50,16);
-              oled.print("OFF");
+              oled.print("Off");
               oled.display();  
             }
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested

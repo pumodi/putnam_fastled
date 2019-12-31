@@ -1,12 +1,14 @@
 //Ada_remoteFXTrigger_RX_NeoPixel
 //Remote Effects Trigger Box Receiver
 //by John Park & Erin St Blaine
-//for Adafruit Industries
+//Edited by Jeffrey Brice
 //
 // Button box receiver with NeoPixels using FastLED
 //
 //
 //MIT License
+#define FASTLED_ALLOW_INTERRUPTS 1
+#define FASTLED_INTERRUPT_RETRY_COUNT 4
 
 #include <FastLED.h>
 
@@ -35,7 +37,7 @@ int STEPS = 20;
 int HUE = 200;    // starting color          
 int SATURATION = 255;          
 int BRIGHTNESS = 200; 
-int glitter = 0; 
+int CURRENTMODE = 0;
 
 /************ Radio Setup ***************/
 
@@ -46,16 +48,15 @@ int glitter = 0;
   #define RFM69_INT     3
   #define RFM69_RST     4
 
+uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 
 // Singleton instance of the radio driver
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
-
 bool oldState = HIGH;
 
-
 void setup() {
-  delay( 3000 ); // power-up safety delay
+  delay( 1000 ); // power-up safety delay
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
   pinMode(LED, OUTPUT);  
@@ -77,14 +78,10 @@ void setup() {
   }
   Serial.println("RFM69 radio init OK!");
   
-  // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM (for low power module)
-  // No encryption
   if (!rf69.setFrequency(RF69_FREQ)) {
     Serial.println("setFrequency failed");
   }
 
-  // If you are using a high power RF69 eg RFM69HW, you *must* set a Tx power with the
-  // ishighpowermodule flag set like this:
   rf69.setTxPower(14, true);
 
   // The encryption key has to be the same as the one in the server
@@ -96,17 +93,12 @@ void setup() {
 
   Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
 
-  delay(500);
-  PowerOnBlink();  //So the lights come un upon startup, even if the trigger box is off
+  PowerOnBlink();  //So the lights come on upon startup, even if the trigger box is off
 }
 
-  void loop(){
-  
-   
-  
+void loop(){
   if (rf69.waitAvailableTimeout(1000)) {
     // Should be a message for us now   
-    uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
     uint8_t len = sizeof(buf);
     
     if (! rf69.recv(buf, &len)) {
@@ -114,22 +106,11 @@ void setup() {
       return;
     }
     
-    //digitalWrite(LED, HIGH);
-   
-    //rf69.printBuffer("Received: ", buf, len);
-    //buf[len] = 0;
-    
-    //Serial.print("Got: "); Serial.println((char*)buf);
-    //Serial.print("RSSI: "); Serial.println(rf69.lastRssi(), DEC);
-
-    
     char radiopacket[20] = "Button #";//prep reply message to send
-
-    
 
     if (buf[0]=='A'){ //the letter sent from the button
       ledMode(0);
-        radiopacket[8] = 'A';   
+      radiopacket[8] = 'A';   
     }
      else if (buf[0]=='B'){ //the letter sent from the button
       ledMode(1);
@@ -169,7 +150,6 @@ void setup() {
       ledMode(8);
        radiopacket[8] = 'I';    
     }
-
      else if (buf[0]=='J'){ //the letter sent from the button
       ledMode(9);
       radiopacket[8] = 'J';    
@@ -178,12 +158,10 @@ void setup() {
       ledMode(10);
       radiopacket[8] = 'K';    
     }
-    
      else if (buf[0]=='L'){ //the letter sent from the button
       ledMode(11);
        radiopacket[8] = 'L';    
     }
-
      else if (buf[0]=='M'){ //the letter sent from the button
       ledMode(12);
       radiopacket[8] = 'M';    
@@ -198,19 +176,19 @@ void setup() {
     }
      else if (buf[0]=='P'){ //the letter sent from the button
       ledMode(15);
-      radiopacket[8] = 'P';    
+      radiopacket[8] = 'P';CURRENTMODE = 15;  
     }
          else if (buf[0]=='Q'){ //the letter sent from the button
       ledMode(16);
-      radiopacket[8] = 'Q';    
+      radiopacket[8] = 'Q';CURRENTMODE = 16;
     }
          else if (buf[0]=='R'){ //the letter sent from the button
       ledMode(17);
-      radiopacket[8] = 'R';    
+      radiopacket[8] = 'R';CURRENTMODE = 17;
     }
-             else if (buf[0]=='S'){ //the letter sent from the button
+      else if (buf[0]=='S'){ //the letter sent from the button
       ledMode(18);
-      radiopacket[8] = 'S';    
+      radiopacket[8] = 'S';CURRENTMODE = 18;
     }
          else if (buf[0]=='T'){ //the letter sent from the button
       ledMode(19);
@@ -220,17 +198,8 @@ void setup() {
       ledMode(20);
       radiopacket[8] = 'Z';    
     }
-
-
-  /*   radiopacket[9] = 0;
-
-    Serial.print("Sending "); Serial.println(radiopacket);
-    rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
-    rf69.waitPacketSent();  */
-
     digitalWrite(LED, LOW);
   }
-
 }
 
 
@@ -238,44 +207,42 @@ void ledMode(int i) {
   switch(i){
     case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();    // red
             break;
-    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();    // gold
+    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();   // gold
             break;
     case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();    // green
             break;
-    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();    // Blue   
+    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();   // Blue   
             break;
     case 4: HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();    // purple
             break;
-    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();    // pink
+    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();     // pink
             break;
-    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();    // white
+    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();     // white
             break;
-    case 7: HUE=0; BRIGHTNESS=0; Solid();    // off
+    case 7: HUE=0; BRIGHTNESS=0; Solid();     // off
             break;
     case 8: HUE=0; SATURATION=255; BRIGHTNESS=200; Gradient();    // red
             break;
-    case 9: HUE=40; SATURATION=255; BRIGHTNESS=200; Gradient();    // gold
+    case 9: HUE=40; SATURATION=255; BRIGHTNESS=200; Gradient();     // gold
             break;
     case 10: HUE=100; SATURATION=255; BRIGHTNESS=200; Gradient();    // green
             break;
-    case 11: HUE=140; SATURATION=255; BRIGHTNESS=200; Gradient();    // blue
+    case 11: HUE=140; SATURATION=255; BRIGHTNESS=200; Gradient();   // blue
             break;
-    case 12:HUE=180; SATURATION=255; BRIGHTNESS=200; Gradient();    // purple
+    case 12:HUE=180; SATURATION=255; BRIGHTNESS=200; Gradient();   // purple
             break;
-    case 13:HUE=220; SATURATION=255; BRIGHTNESS=200; Gradient();    // pink
+    case 13:HUE=220; SATURATION=255; BRIGHTNESS=200; Gradient();     // pink
             break;
-    case 14:HUE=160; SATURATION=50; BRIGHTNESS=200; Gradient();    // white
+    case 14:HUE=160; SATURATION=50; BRIGHTNESS=200; Gradient();      // white
             break;
-    case 15:SATURATION=255; BRIGHTNESS=200;CylonBounce(0xff, 0, 0, 8, 0, 0);
-;    // Cylon
+    case 15:Twinkle(0xff, 0, 0, 10, 100, false);// Twinkle
             break;
-    case 16:Breath();   //breath
+    case 16:Breath(0, 5);//Breath
             break;
-    case 17:STEPS=20; BRIGHTNESS=200; SATURATION=255; Rainbow();    // rainbow 3
+    case 17:RunningLights(0xff,0xff,0x00, 50);//Running Lights
             break;
-    case 20:BRIGHTNESS=200;
+    case 20:HUE=0; BRIGHTNESS=0; Solid();   // off
             break;
-            
   }
 }
 
@@ -296,67 +263,55 @@ void Solid()
 {
    fill_solid(leds, NUM_LEDS, CHSV(HUE, SATURATION, BRIGHTNESS)); 
    FastLED.show(); 
-   delay(20); 
-
 }
 
-// RAINBOW --------------------------------------------------
-void Rainbow()
-{ 
-  FastLED.setBrightness(  BRIGHTNESS );
-  currentPalette = RainbowColors_p;
-  
-  static uint8_t startIndex = 0;
-  startIndex = startIndex + 1; 
-
-  FillLEDsFromPaletteColors( startIndex);
-    
-  FastLED.show();
-  FastLED.delay(SPEEDO);  
-}
 // Animations --------------------------------------------------
-void CylonBounce(byte red, byte green, byte blue, int EyeSize, int SpeedDelay, int ReturnDelay){
-
-  for(int i = 0; i < NUM_LEDS-EyeSize-2; i++) {
-    setAll(0,0,0);
-    setPixel(i, red/10, green/10, blue/10);
-    for(int j = 1; j <= EyeSize; j++) {
-      setPixel(i+j, red, green, blue);
-    }
-    setPixel(i+EyeSize+1, red/10, green/10, blue/10);
-    showStrip();
-    delay(SpeedDelay);
-  }
-
-  delay(ReturnDelay);
-
-  for(int i = NUM_LEDS-EyeSize-2; i > 0; i--) {
-    setAll(0,0,0);
-    setPixel(i, red/10, green/10, blue/10);
-    for(int j = 1; j <= EyeSize; j++) {
-      setPixel(i+j, red, green, blue);
-    }
-    setPixel(i+EyeSize+1, red/10, green/10, blue/10);
-    showStrip();
-    delay(SpeedDelay);
-  }
- 
-  delay(ReturnDelay);
+void Twinkle(byte red, byte green, byte blue, int Count, int SpeedDelay, boolean OnlyOne) {
+  setAll(0,0,0);
+  
+  for (int i=0; i<Count; i++) {
+    if (CURRENTMODE !=15) break;
+     setPixel(random(NUM_LEDS),red,green,blue);
+     FastLED.show();
+     delay(SpeedDelay);
+     if(OnlyOne) { 
+       setAll(0,0,0); 
+     }
+   }
+  
+  delay(SpeedDelay);
 }
 
-void Breath() {
-  int BreathBrightness = 0;
-  int z = 5;
+void Breath(int BreathBrightness, int z) { 
   for(int i = 0; i > -1; i = i+z){
-    HUE=0; SATURATION=255; BRIGHTNESS=BreathBrightness; Solid(); 
-    BreathBrightness = BreathBrightness + z;
-    delay(5);
+    if (CURRENTMODE !=16) break;
     if(i == 250) {
       z = -2;
     }
-    if(i < 0){
-      i = 0;
-    }
+    HUE=0; SATURATION=255; BRIGHTNESS=BreathBrightness; Solid(); 
+    BreathBrightness = BreathBrightness + z;
+  }
+}
+
+void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
+  int Position=0;
+  
+  for(int j=0; j<NUM_LEDS*2; j++)
+  {
+     if (CURRENTMODE != 17) break;
+      Position++; // = 0; //Position + Rate;
+      for(int i=0; i<NUM_LEDS; i++) {
+        // sine wave, 3 offset waves make a rainbow!
+        //float level = sin(i+Position) * 127 + 128;
+        //setPixel(i,level,0,0);
+        //float level = sin(i+Position) * 127 + 128;
+        setPixel(i,((sin(i+Position) * 127 + 128)/255)*red,
+                   ((sin(i+Position) * 127 + 128)/255)*green,
+                   ((sin(i+Position) * 127 + 128)/255)*blue);
+      }
+      
+      FastLED.show();
+      delay(WaveDelay);
   }
 }
 
@@ -373,6 +328,8 @@ void PowerOnBlink() {
   delay(150);
   HUE=0; BRIGHTNESS=0; Solid();
 }
+
+// Utility Functions
 
 void SetupGradientPalette()
 {
@@ -397,17 +354,6 @@ void FillLEDsFromPaletteColors( uint8_t colorIndex)
   }
 }
 
-void showStrip() {
- #ifdef ADAFRUIT_NEOPIXEL_H
-   // NeoPixel
-   strip.show();
- #endif
- #ifndef ADAFRUIT_NEOPIXEL_H
-   // FastLED
-   FastLED.show();
- #endif
-}
-
 void setPixel(int Pixel, byte red, byte green, byte blue) {
  #ifdef ADAFRUIT_NEOPIXEL_H
    // NeoPixel
@@ -425,5 +371,5 @@ void setAll(byte red, byte green, byte blue) {
   for(int i = 0; i < NUM_LEDS; i++ ) {
     setPixel(i, red, green, blue);
   }
-  showStrip();
+  FastLED.show();
 }
