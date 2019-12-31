@@ -97,7 +97,7 @@ void setup() {
 }
 
 void loop(){
-  if (rf69.waitAvailableTimeout(1000)) {
+  if (rf69.waitAvailableTimeout(100)) {
     // Should be a message for us now   
     uint8_t len = sizeof(buf);
     
@@ -121,7 +121,6 @@ void loop(){
       ledMode(2);
        radiopacket[8] = 'C';    
     }
-
      else if (buf[0]=='D'){ //the letter sent from the button
       ledMode(3);
       radiopacket[8] = 'D';    
@@ -244,8 +243,7 @@ void ledMode(int i) {
 }
 
 // GRADIENT --------------------------------------------------------------
-void Gradient()
-{
+void Gradient(){
   SetupGradientPalette();
 
   static uint8_t startIndex = 0;
@@ -256,8 +254,7 @@ void Gradient()
 }
 
 // SOLID ----------------------------------------------------
-void Solid()
-{
+void Solid() {
    fill_solid(leds, NUM_LEDS, CHSV(HUE, SATURATION, BRIGHTNESS)); 
    FastLED.show(); 
 }
@@ -316,23 +313,12 @@ void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
 }
 
 void PowerOnBlink() {
-  HUE=0; SATURATION=255; BRIGHTNESS=200; Solid(); 
-  delay(150);
-  HUE=0; BRIGHTNESS=0; Solid();
-  delay(150);
-  HUE=200; SATURATION=255; BRIGHTNESS=200; Solid(); 
-  delay(150);
-  HUE=0; BRIGHTNESS=0; Solid();
-  delay(150);
-  HUE=400; SATURATION=255; BRIGHTNESS=200; Solid(); 
-  delay(150);
-  HUE=0; BRIGHTNESS=0; Solid();
+  HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();delay(150);HUE=0; BRIGHTNESS=0; Solid();delay(150);HUE=200; SATURATION=255; BRIGHTNESS=200; Solid(); delay(150);HUE=0; BRIGHTNESS=0; Solid();delay(150);HUE=400; SATURATION=255; BRIGHTNESS=200; Solid(); delay(150);HUE=0; BRIGHTNESS=0; Solid();
 }
 
 // Utility Functions
 
-void SetupGradientPalette()
-{
+void SetupGradientPalette(){
   CRGB light = CHSV( HUE + 25, SATURATION - 20, BRIGHTNESS);
   CRGB dark  = CHSV( HUE, SATURATION - 15, BRIGHTNESS);
   CRGB medium = CHSV ( HUE - 25, SATURATION, BRIGHTNESS);
@@ -344,8 +330,7 @@ void SetupGradientPalette()
     medium, medium, medium,  medium );
 }
 
-void FillLEDsFromPaletteColors( uint8_t colorIndex)
-{
+void FillLEDsFromPaletteColors( uint8_t colorIndex){
   uint8_t brightness = BRIGHTNESS;
   
   for( int i = 0; i < NUM_LEDS; i++) {
