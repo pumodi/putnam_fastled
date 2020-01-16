@@ -1,10 +1,9 @@
 //Ada_remoteFXTrigger_RX_NeoPixel
 //Remote Effects Trigger Box Receiver
 //by John Park & Erin St Blaine
-//Edited by Jeffrey Brice
+//Modified by Jeffrey Brice for Rex Putnam High School Drumline in the 2020 winter show
 //
 // Button box receiver with NeoPixels using FastLED
-//
 //
 //MIT License
 #define FASTLED_ALLOW_INTERRUPTS 1
@@ -27,17 +26,15 @@ CRGBArray<NUM_LEDS> leds;
 
 /********** NeoPixel Setup *************/
 
-#define UPDATES_PER_SECOND 100
+#define UPDATES_PER_SECOND 1000
 CRGBPalette16 currentPalette( CRGB::Black);
 CRGBPalette16 targetPalette( PartyColors_p );
 TBlendType    currentBlending;
-
-int SPEEDO = 25;          
+    
 int STEPS = 20;         
 int HUE = 200;    // starting color          
 int SATURATION = 255;          
 int BRIGHTNESS = 200; 
-int CURRENTMODE = 0;
 
 /************ Radio Setup ***************/
 
@@ -64,7 +61,7 @@ void setup() {
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
 
-  Serial.println("Feather RFM69 RX/TX Test!");
+  /*Serial.println("Feather RFM69 RX/TX Test!");*/
 
   // manual reset
   digitalWrite(RFM69_RST, HIGH);
@@ -72,7 +69,7 @@ void setup() {
   digitalWrite(RFM69_RST, LOW);
   delay(10);
   
-  if (!rf69.init()) {
+ /* if (!rf69.init()) {
     Serial.println("RFM69 radio init failed");
     while (1);
   }
@@ -80,7 +77,7 @@ void setup() {
   
   if (!rf69.setFrequency(RF69_FREQ)) {
     Serial.println("setFrequency failed");
-  }
+  } */
 
   rf69.setTxPower(14, true);
 
@@ -91,7 +88,7 @@ void setup() {
   
   pinMode(LED, OUTPUT);
 
-  Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
+ /* Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");*/
 
   PowerOnBlink();  //So the lights come on upon startup, even if the trigger box is off
 }
@@ -101,10 +98,10 @@ void loop(){
     // Should be a message for us now   
     uint8_t len = sizeof(buf);
     
-    if (! rf69.recv(buf, &len)) {
+    /*if (! rf69.recv(buf, &len)) {
       Serial.println("Receive failed");
       return;
-    }
+    }*/
     
     char radiopacket[20] = "Button #";//prep reply message to send
 
@@ -172,32 +169,51 @@ void loop(){
     }
      else if (buf[0]=='P'){ //the letter sent from the button
       ledMode(15);
-      radiopacket[8] = 'P';CURRENTMODE = 15;  
+      radiopacket[8] = 'P';
     }
          else if (buf[0]=='Q'){ //the letter sent from the button
       ledMode(16);
-      radiopacket[8] = 'Q';CURRENTMODE = 16;
+      radiopacket[8] = 'Q';
     }
          else if (buf[0]=='R'){ //the letter sent from the button
       ledMode(17);
-      radiopacket[8] = 'R';CURRENTMODE = 17;
+      radiopacket[8] = 'R';
     }
       else if (buf[0]=='S'){ //the letter sent from the button
       ledMode(18);
-      radiopacket[8] = 'S';CURRENTMODE = 18;
+      radiopacket[8] = 'S';
     }
          else if (buf[0]=='T'){ //the letter sent from the button
       ledMode(19);
-      radiopacket[8] = 'T';CURRENTMODE = 19;
+      radiopacket[8] = 'T';
+    }
+             else if (buf[0]=='U'){ //the letter sent from the button
+      ledMode(20);
+      radiopacket[8] = 'U';
+    }
+             else if (buf[0]=='V'){ //the letter sent from the button
+      ledMode(21);
+      radiopacket[8] = 'V';
+    }
+             else if (buf[0]=='W'){ //the letter sent from the button
+      ledMode(22);
+      radiopacket[8] = 'W';
+    }
+             else if (buf[0]=='X'){ //the letter sent from the button
+      ledMode(23);
+      radiopacket[8] = 'X';
+    }
+             else if (buf[0]=='Y'){ //the letter sent from the button
+      ledMode(24);
+      radiopacket[8] = 'Y';
     }
          else if (buf[0]=='Z'){ //the letter sent from the button
-      ledMode(20);
-      radiopacket[8] = 'Z';CURRENTMODE = 20;
+      ledMode(25);
+      radiopacket[8] = 'Z';
     }
     digitalWrite(LED, LOW);
   }
 }
-
 
 void ledMode(int i) {
   switch(i){
@@ -217,40 +233,37 @@ void ledMode(int i) {
             break;
     case 7: HUE=0; BRIGHTNESS=0; Solid();     // off
             break;
-    case 8: HUE=0; SATURATION=255; BRIGHTNESS=200; Gradient();    // red
+    case 8:     // Show Start. Lights Off
             break;
-    case 9: HUE=40; SATURATION=255; BRIGHTNESS=200; Gradient();     // gold
+    case 9:     // Monolith Powers On
             break;
-    case 10: HUE=100; SATURATION=255; BRIGHTNESS=200; Gradient();    // green
+    case 10:    // Monolith Pulse and Dim
             break;
-    case 11: HUE=140; SATURATION=255; BRIGHTNESS=200; Gradient();   // blue
+    case 11:   // Snare Solo MS115
             break;
-    case 12:HUE=180; SATURATION=255; BRIGHTNESS=200; Gradient();   // purple
+    case 12:   // Monolith Red Pulse
             break;
-    case 13:HUE=220; SATURATION=255; BRIGHTNESS=200; Gradient();     // pink
+    case 13:   // Monolith Red Strobe
             break;
-    case 14:HUE=160; SATURATION=50; BRIGHTNESS=200; Gradient();      // white
+    case 14:      // Monolith EFX
             break;
-    case 15:Twinkle(0xff, 0, 0, 10, 100, false);// Twinkle
+    case 15:  // Monolith Solid Blue
             break;
-    case 16:Breath(0, 5);//Breath
+    case 16:  // Monolith and Snares, Solid Green
             break;
-    case 17:RunningLights(0xff,0xff,0x00, 50);//Running Lights
+    case 17: // Add Basses
             break;
-    case 20:HUE=0; BRIGHTNESS=0; Solid();   // off
+    case 20:    // Add Quads
+            break;
+    case 21:   // All On w/EFX
+            break;
+    case 22:   // White Sequence.  Pulse/Chase/Pulse/Solid. 
+            break;
+    case 23:  // Solid White
+            break;
+    default: HUE=0; BRIGHTNESS=0; Solid();     // off
             break;
   }
-}
-
-// GRADIENT --------------------------------------------------------------
-void Gradient(){
-  SetupGradientPalette();
-
-  static uint8_t startIndex = 0;
-  startIndex = startIndex + 1;  // motion speed
-  FillLEDsFromPaletteColors( startIndex);
-  FastLED.show();
-  FastLED.delay(SPEEDO);
 }
 
 // SOLID ----------------------------------------------------
@@ -260,25 +273,8 @@ void Solid() {
 }
 
 // Animations --------------------------------------------------
-void Twinkle(byte red, byte green, byte blue, int Count, int SpeedDelay, boolean OnlyOne) {
-  setAll(0,0,0);
-  
-  for (int i=0; i<Count; i++) {
-    if (CURRENTMODE !=15) break;
-     setPixel(random(NUM_LEDS),red,green,blue);
-     FastLED.show();
-     delay(SpeedDelay);
-     if(OnlyOne) { 
-       setAll(0,0,0); 
-     }
-   }
-  
-  delay(SpeedDelay);
-}
-
 void Breath(int BreathBrightness, int z) { 
   for(int i = 0; i > -1; i = i+z){
-    if (CURRENTMODE !=16) break;
     if(i == 250) {
       z = -2;
     }
@@ -289,11 +285,8 @@ void Breath(int BreathBrightness, int z) {
 
 void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
   int Position=0;
-  
   for(int j=0; j<NUM_LEDS*2; j++)
   {
-     if (CURRENTMODE != 17) break;
-     if (CURRENTMODE != 17) return;
       Position++; // = 0; //Position + Rate;
       for(int i=0; i<NUM_LEDS; i++) {
         // sine wave, 3 offset waves make a rainbow!
@@ -306,8 +299,6 @@ void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
       }
       
       FastLED.show();
-      if (CURRENTMODE != 17) break;
-      if (CURRENTMODE != 17) return;
       delay(WaveDelay);
   }
 }
@@ -317,18 +308,6 @@ void PowerOnBlink() {
 }
 
 // Utility Functions
-
-void SetupGradientPalette(){
-  CRGB light = CHSV( HUE + 25, SATURATION - 20, BRIGHTNESS);
-  CRGB dark  = CHSV( HUE, SATURATION - 15, BRIGHTNESS);
-  CRGB medium = CHSV ( HUE - 25, SATURATION, BRIGHTNESS);
-  
-  currentPalette = CRGBPalette16( 
-    light,  light,  light,  light,
-    medium, medium, medium,  medium,
-    dark,  dark,  dark,  dark,
-    medium, medium, medium,  medium );
-}
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex){
   uint8_t brightness = BRIGHTNESS;
@@ -350,11 +329,4 @@ void setPixel(int Pixel, byte red, byte green, byte blue) {
    leds[Pixel].g = green;
    leds[Pixel].b = blue;
  #endif
-}
-
-void setAll(byte red, byte green, byte blue) {
-  for(int i = 0; i < NUM_LEDS; i++ ) {
-    setPixel(i, red, green, blue);
-  }
-  FastLED.show();
 }

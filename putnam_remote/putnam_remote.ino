@@ -274,7 +274,7 @@ void loop() {
             oled.drawPixel(q,p,WHITE);
           }
         }
-        oled.print(" Gradients");
+        oled.print("Mvmt 1 + 2");
         clearPixels();
         trellis.pixels.setPixelColor(0, 50,0,0);
         trellis.pixels.setPixelColor(1, 50,50,0);
@@ -292,11 +292,15 @@ void loop() {
             oled.drawPixel(q,p,WHITE);
           }
         }
-        oled.print("Animations");
+        oled.print("Mvmt 3 + 4");
         clearPixels();
         trellis.pixels.setPixelColor(0, 50,0,0);
         trellis.pixels.setPixelColor(1, 50,50,0);
         trellis.pixels.setPixelColor(2, 0,50,0);
+        trellis.pixels.setPixelColor(3, 0,0,50);
+        trellis.pixels.setPixelColor(4, 20,0,50);
+        trellis.pixels.setPixelColor(5, 50,0,20);
+        trellis.pixels.setPixelColor(6, 100,100,100);
         trellis.pixels.setPixelColor(7, 10,10,10);
         trellis.pixels.show();
       }
@@ -393,7 +397,7 @@ void loop() {
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested
 }
 
-/**************Gradients**************/
+/**************Mvmt 1+2+3**************/
        
         if(m==1){ //next menu item
        
@@ -401,114 +405,140 @@ void loop() {
               radiopacket[0] = 'I';
               oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Lights Off");
               oled.setCursor(50,16);
-              oled.print("RED");
+              oled.print("Don't Panic!");
               oled.display(); 
             }
             if (x==1){ //button 2 sends button B command
               radiopacket[0] = 'J';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Monolith");
               oled.setCursor(50,16);
-              oled.print("GOLD");
+              oled.print("Power On");
               oled.display(); 
             }
             if (x==2){ //button 3 sends button C command
               radiopacket[0] = 'K';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Monlith");
               oled.setCursor(50,16);
-              oled.print("GREEN");
+              oled.print("Pulse/Dim");
               oled.display();  
             } 
-
             if (x==3){ //button 4 sends button D command
               radiopacket[0] = 'L';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Snare Solo");
               oled.setCursor(50,16);
-              oled.print("BLUE");
+              oled.print("MS 115");
               oled.display();  
             }
-
             if (x==4){ //button 5 sends button E command
               radiopacket[0] = 'M';
               oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Monlith Red");
               oled.setCursor(50,16);
-              oled.print("PURPLE");
+              oled.print("Dim to Increase");
               oled.display(); 
             }
             if (x==5){ //button 6 sends button F command
               radiopacket[0] = 'N';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Monolith");
               oled.setCursor(50,16);
-              oled.print("PINK");
+              oled.print("Red Pulse");
               oled.display(); 
             }
             if (x==6){ //button 7 sends button G command
               radiopacket[0] = 'O';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
+              oled.print("Monlith");
               oled.setCursor(50,16);
-              oled.print("WHITE");
+              oled.print("Red Strobe");
               oled.display();  
             } 
-
             if (x==7){ //button 8 sends button H command
-              radiopacket[0] = 'H';
+              radiopacket[0] = 'P';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Gradient");
-              oled.setCursor(50,16);
-              oled.print("OFF");
+              oled.print("Monolith EFX");
               oled.display();  
             }
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested
 }
 
 
-/**************Rainbows**************/
+/**************Mvmt 3+4**************/
        
         if(m==2){ //next menu item
-       
             if (x==0){ //button 1 sends button A command
-              radiopacket[0] = 'P';
+              radiopacket[0] = 'Q';
               oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Twinkle");
+              oled.print("Monolith");
+              oled.setCursor(50,16);
+              oled.print("Solid Blue");
               oled.display(); 
             }
             if (x==1){ //button 2 sends button B command
-              radiopacket[0] = 'Q';
-             oled.clearDisplay();
-              oled.setCursor(0,0);
-              oled.print("Breath");
-              oled.display(); 
-            }
-            if (x==2){ //button 3 sends button C command
               radiopacket[0] = 'R';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Running");
+              oled.print("Mon + Sn");
               oled.setCursor(50,16);
-              oled.print("Lights");
-              oled.display();  
-            } 
-
-            if (x==7){ //button 8 sends button H command
-              radiopacket[0] = 'H';
+              oled.print("Solid Green");
+              oled.display(); 
+            }
+            if (x==2){ //button 3 sends button C command
+              radiopacket[0] = 'S';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Off");
+              oled.print("Add basses");
+              oled.display();  
+            } 
+            if (x==3){ //button 3 sends button C command
+              radiopacket[0] = 'T';
+             oled.clearDisplay();
+              oled.setCursor(0,0);
+              oled.print("Add Quads");
+              oled.display();  
+            } 
+            if (x==4){ //button 3 sends button C command
+              radiopacket[0] = 'U';
+             oled.clearDisplay();
+              oled.setCursor(0,0);
+              oled.print("All On");
+              oled.display();  
+            } 
+            if (x==5){ //button 3 sends button C command
+              radiopacket[0] = 'V';
+             oled.clearDisplay();
+              oled.setCursor(0,0);
+              oled.print("White Sequence");
+              oled.setCursor(50,16);
+              oled.print("Pls/Chs/Pls/Sol");
+              oled.display();  
+            } 
+            if (x==6){ //button 3 sends button C command
+              radiopacket[0] = 'W';
+              oled.setCursor(0,0);
+              oled.print("Solid");
+              oled.setCursor(50,16);
+              oled.print("White");
+              oled.display();  
+            } 
+            if (x==7){ //button 8 sends button H command
+              radiopacket[0] = 'X';
+             oled.clearDisplay();
+              oled.setCursor(0,0);
+              oled.print("All Off");
               oled.display();  
             }
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested
@@ -587,6 +617,6 @@ void clearPixels() {
     trellis.pixels.show();
     delay(2);
   }  
-  }
+}
 
  
