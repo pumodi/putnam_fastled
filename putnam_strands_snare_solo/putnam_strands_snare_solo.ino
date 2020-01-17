@@ -12,7 +12,7 @@
 #include <FastLED.h>
 
 #define LED_PIN  12
-#define NUM_LEDS    256    
+#define NUM_LEDS    58    
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
@@ -30,11 +30,11 @@ CRGBArray<NUM_LEDS> leds;
 CRGBPalette16 currentPalette( CRGB::Black);
 CRGBPalette16 targetPalette( PartyColors_p );
 TBlendType    currentBlending;
-    
-int STEPS = 20;         
+         
 int HUE = 200;    // starting color          
 int SATURATION = 255;          
 int BRIGHTNESS = 200; 
+int startUpHasRun = 0;
 
 /************ Radio Setup ***************/
 
@@ -61,7 +61,7 @@ void setup() {
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
 
-  /*Serial.println("Feather RFM69 RX/TX Test!");*/
+  Serial.println("Feather RFM69 RX/TX Test!");
 
   // manual reset
   digitalWrite(RFM69_RST, HIGH);
@@ -69,7 +69,7 @@ void setup() {
   digitalWrite(RFM69_RST, LOW);
   delay(10);
   
- /* if (!rf69.init()) {
+  if (!rf69.init()) {
     Serial.println("RFM69 radio init failed");
     while (1);
   }
@@ -77,7 +77,7 @@ void setup() {
   
   if (!rf69.setFrequency(RF69_FREQ)) {
     Serial.println("setFrequency failed");
-  } */
+  } 
 
   rf69.setTxPower(14, true);
 
@@ -88,20 +88,24 @@ void setup() {
   
   pinMode(LED, OUTPUT);
 
- /* Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");*/
+  Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
 
-  PowerOnBlink();  //So the lights come on upon startup, even if the trigger box is off
+  if(startUpHasRun == 0) {
+    PowerOnBlink();  //So the lights come on upon startup, even if the trigger box is off
+    startUpHasRun = 1;
+    Serial.print("Here we go again");
+  }
 }
 
 void loop(){
-  if (rf69.waitAvailableTimeout(100)) {
+  if (rf69.waitAvailableTimeout(1)) {
     // Should be a message for us now   
     uint8_t len = sizeof(buf);
     
-    /*if (! rf69.recv(buf, &len)) {
+    if (! rf69.recv(buf, &len)) {
       Serial.println("Receive failed");
       return;
-    }*/
+    }
     
     char radiopacket[20] = "Button #";//prep reply message to send
 
@@ -203,66 +207,36 @@ void loop(){
       ledMode(23);
       radiopacket[8] = 'X';
     }
-             else if (buf[0]=='Y'){ //the letter sent from the button
-      ledMode(24);
-      radiopacket[8] = 'Y';
-    }
-         else if (buf[0]=='Z'){ //the letter sent from the button
-      ledMode(25);
-      radiopacket[8] = 'Z';
-    }
     digitalWrite(LED, LOW);
   }
 }
 
 void ledMode(int i) {
   switch(i){
-    case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();    // red
-            break;
-    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();   // gold
-            break;
-    case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();    // green
-            break;
-    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();   // Blue   
-            break;
-    case 4: HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();    // purple
-            break;
-    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();     // pink
-            break;
-    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();     // white
-            break;
-    case 7: HUE=0; BRIGHTNESS=0; Solid();     // off
-            break;
-    case 8: HUE=0; BRIGHTNESS=0; Solid();    // Show Start. Lights Off
-            break;
-    case 9: HUE=0; BRIGHTNESS=0; Solid();    // Monolith Powers On
-            break;
-    case 10: HUE=0; BRIGHTNESS=0; Solid();   // Monolith Pulse and Dim
-            break;
-    case 11:   // Snare Solo MS115
-            break;
-    case 12: HUE=0; BRIGHTNESS=0; Solid();   // Monolith Red Pulse
-            break;
-    case 13: HUE=0; BRIGHTNESS=0; Solid();   // Monolith Red Strobe
-            break;
-    case 14:  HUE=0; BRIGHTNESS=0; Solid();     // Monolith EFX
-            break;
-    case 15: HUE=0; BRIGHTNESS=0; Solid();  // Monolith Solid Blue
-            break;
-    case 16: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid(); // Monolith and Snares, Solid Green
-            break;
-    case 17: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();// Add Basses
-            break;
-    case 20: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();   // Add Quads
-            break;
-    case 21: Sparkle(random(255), random(255), random(255), 0); // All On w/EFX
-            break;
-    case 22: theaterChase(0xFF,0xFF,0xFF,50);  // White Sequence.  Pulse/Chase/Pulse/Solid. 
-            break;
-    case 23: SATURATION=0; BRIGHTNESS=200; Solid();  // Solid White
-            break;
-    default: HUE=0; BRIGHTNESS=0; Solid();     // off
-            break;
+    case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// red 
+    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;// gold 
+    case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// green
+    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Blue
+    case 4: HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();break;// purple  
+    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();break;// pink 
+    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// white
+    case 7: HUE=0; BRIGHTNESS=0; Solid();break;// off
+    case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off 
+    case 9: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Powers On
+    case 10: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Pulse and Dim            
+    case 11:theaterChase(0xFF,0xFF,0xFF,50);break;  // Snare Solo MS115 
+    case 12:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Dim to Increase
+    case 13:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Red Pulse
+    case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Strobe
+    case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith EFX
+    case 16:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Solid Blue 
+    case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
+    case 18:HUE=100;HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses
+    case 19:HUE=100;HUE=0; BRIGHTNESS=0; Solid();break;// Add Quads
+    case 20:theaterChase(0xFF,0x00,0x00,50);break;  // All On w/EFX   
+    case 21:theaterChase(0xFF,0xFF,0xFF,50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid. 
+    case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// Solid White
+    case 23:HUE=0; BRIGHTNESS=0; Solid();break;
   }
 }
 
@@ -294,7 +268,7 @@ void FadeInOut(byte red, byte green, byte blue){
 }
 
 void theaterChase(byte red, byte green, byte blue, int SpeedDelay) {
-  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
+  for (int j=0; j<100; j++) {  //do 10 cycles of chasing
     for (int q=0; q < 3; q++) {
       for (int i=0; i < NUM_LEDS; i=i+3) {
         setPixel(i+q, red, green, blue);    //turn every third pixel on
@@ -308,14 +282,7 @@ void theaterChase(byte red, byte green, byte blue, int SpeedDelay) {
       }
     }
   }
-}
-
-void Sparkle(byte red, byte green, byte blue, int SpeedDelay) {
-  int Pixel = random(NUM_LEDS);
-  setPixel(Pixel,red,green,blue);
-  showStrip();
-  delay(SpeedDelay);
-  setPixel(Pixel,0,0,0);
+  ledMode(23);
 }
 
 void PowerOnBlink() {

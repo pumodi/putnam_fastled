@@ -160,17 +160,10 @@ pinMode(INTPIN, INPUT);
 
   oled.clearDisplay();
   oled.setCursor(0,0);
-  oled.println("Welcome Rex");
+  oled.println("Hello Rex");
   oled.println("Putnam <3");
   oled.display();
   delay(1200); //pause to let freq message be read by a human
-
-  oled.clearDisplay();
-  oled.setCursor(0,0);
-  oled.println("REMOTE FX");
-  oled.setCursor(0,16);
-  oled.println("TRIGGER");  
-  oled.display();
 
    if (!trellis.begin()) {
     Serial.println("Could not start trellis, check wiring?");
@@ -258,12 +251,12 @@ void loop() {
         }
         oled.print(" Solids");
         clearPixels();
-        trellis.pixels.setPixelColor(0, 50,0,0);
-        trellis.pixels.setPixelColor(1, 50,50,0);
-        trellis.pixels.setPixelColor(2, 0,50,0);
+        trellis.pixels.setPixelColor(0, 102,102,255);
+        trellis.pixels.setPixelColor(1, 50,0,16);
+        trellis.pixels.setPixelColor(2, 0,0,16);
         trellis.pixels.setPixelColor(3, 0,0,50);
         trellis.pixels.setPixelColor(4, 20,0,50);
-        trellis.pixels.setPixelColor(5, 50,0,20);
+        trellis.pixels.setPixelColor(5, 0,16,20);
         trellis.pixels.setPixelColor(6, 100,100,100);
         trellis.pixels.setPixelColor(7, 10,10,10);
         trellis.pixels.show();
@@ -274,34 +267,24 @@ void loop() {
             oled.drawPixel(q,p,WHITE);
           }
         }
-        oled.print("Mvmt 1 + 2");
+        oled.print("Convergence");
         clearPixels();
-        trellis.pixels.setPixelColor(0, 50,0,0);
-        trellis.pixels.setPixelColor(1, 50,50,0);
-        trellis.pixels.setPixelColor(2, 0,50,0);
-        trellis.pixels.setPixelColor(3, 0,0,50);
-        trellis.pixels.setPixelColor(4, 20,0,50);
-        trellis.pixels.setPixelColor(5, 50,0,20);
-        trellis.pixels.setPixelColor(6, 100,100,100);
-        trellis.pixels.setPixelColor(7, 10,10,10);
-        trellis.pixels.show();
-      }
-      if (m==2){
-        for(p=12;p<16;p++){
-          for(q=0;q<4;q++){
-            oled.drawPixel(q,p,WHITE);
-          }
-        }
-        oled.print("Mvmt 3 + 4");
-        clearPixels();
-        trellis.pixels.setPixelColor(0, 50,0,0);
-        trellis.pixels.setPixelColor(1, 50,50,0);
-        trellis.pixels.setPixelColor(2, 0,50,0);
-        trellis.pixels.setPixelColor(3, 0,0,50);
-        trellis.pixels.setPixelColor(4, 20,0,50);
-        trellis.pixels.setPixelColor(5, 50,0,20);
-        trellis.pixels.setPixelColor(6, 100,100,100);
-        trellis.pixels.setPixelColor(7, 10,10,10);
+        trellis.pixels.setPixelColor(0, 0,255,0);
+        trellis.pixels.setPixelColor(1, 0,255,0);
+        trellis.pixels.setPixelColor(2, 0,255,0);
+        trellis.pixels.setPixelColor(3, 0,255,0);
+        trellis.pixels.setPixelColor(4, 0,255,0);
+        trellis.pixels.setPixelColor(5, 0,255,0);
+        trellis.pixels.setPixelColor(6, 0,255,0);
+        trellis.pixels.setPixelColor(7, 0,255,0);
+        trellis.pixels.setPixelColor(8, 0,255,0);
+        trellis.pixels.setPixelColor(9, 0,255,0);
+        trellis.pixels.setPixelColor(10, 0,255,0);
+        trellis.pixels.setPixelColor(11, 0,255,0);
+        trellis.pixels.setPixelColor(12, 0,255,0);
+        trellis.pixels.setPixelColor(13, 0,255,0);
+        trellis.pixels.setPixelColor(14, 0,255,0);
+        trellis.pixels.setPixelColor(15, 100,100,100);
         trellis.pixels.show();
       }
  
@@ -322,7 +305,7 @@ void loop() {
               oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("RED");
               oled.display(); 
             }
@@ -331,7 +314,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("GOLD");
               oled.display(); 
             }
@@ -340,7 +323,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("GREEN");
               oled.display();  
             } 
@@ -350,7 +333,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("BLUE");
               oled.display();  
             }
@@ -360,7 +343,7 @@ void loop() {
               oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("PURPLE");
               oled.display(); 
             }
@@ -369,7 +352,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("PINK");
               oled.display(); 
             }
@@ -378,7 +361,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("WHITE");
               oled.display();  
             } 
@@ -388,7 +371,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("OFF");
               oled.display();  
             }
@@ -406,7 +389,7 @@ void loop() {
               oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Lights Off");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("Don't Panic!");
               oled.display(); 
             }
@@ -415,7 +398,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Monolith");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("Power On");
               oled.display(); 
             }
@@ -424,7 +407,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Monlith");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("Pulse/Dim");
               oled.display();  
             } 
@@ -433,7 +416,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Snare Solo");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("MS 115");
               oled.display();  
             }
@@ -441,9 +424,9 @@ void loop() {
               radiopacket[0] = 'M';
               oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Monlith Red");
-              oled.setCursor(50,16);
-              oled.print("Dim to Increase");
+              oled.print("Monolith");
+              oled.setCursor(0,16);
+              oled.print("Warmup");
               oled.display(); 
             }
             if (x==5){ //button 6 sends button F command
@@ -451,7 +434,7 @@ void loop() {
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Monolith");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("Red Pulse");
               oled.display(); 
             }
@@ -459,8 +442,8 @@ void loop() {
               radiopacket[0] = 'O';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Monlith");
-              oled.setCursor(50,16);
+              oled.print("Monolith");
+              oled.setCursor(0,16);
               oled.print("Red Strobe");
               oled.display();  
             } 
@@ -468,73 +451,75 @@ void loop() {
               radiopacket[0] = 'P';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Monolith EFX");
+              oled.print("Monolith");
+              oled.setCursor(0,16);
+              oled.print("FX");
               oled.display();  
             }
- trellis.pixels.show(); // tell the trellis to set the LEDs we requested
-}
-
-
-/**************Mvmt 3+4**************/
-       
-        if(m==2){ //next menu item
-            if (x==0){ //button 1 sends button A command
+            if (x==8){ //button 9 sends button Q command
               radiopacket[0] = 'Q';
               oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Monolith");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("Solid Blue");
               oled.display(); 
             }
-            if (x==1){ //button 2 sends button B command
+            if (x==9){ //button 10 sends button R command
               radiopacket[0] = 'R';
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Mon + Sn");
-              oled.setCursor(50,16);
-              oled.print("Solid Green");
+              oled.setCursor(0,16);
+              oled.print("Green");
               oled.display(); 
             }
-            if (x==2){ //button 3 sends button C command
+            if (x==10){ //button 11 sends button S command
               radiopacket[0] = 'S';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Add basses");
+              oled.print("Mon + Basses");
+              oled.setCursor(0,16);
+              oled.print("Green");
               oled.display();  
             } 
-            if (x==3){ //button 3 sends button C command
+            if (x==11){ //button 12 sends button T command
               radiopacket[0] = 'T';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Add Quads");
+              oled.print("Mon + Quads");
+              oled.setCursor(0,16);
+              oled.print("Green");
               oled.display();  
             } 
-            if (x==4){ //button 3 sends button C command
+            if (x==12){ //button 13 sends button U command
               radiopacket[0] = 'U';
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("All On");
+              oled.setCursor(0,16);
+              oled.print("With FX");
               oled.display();  
             } 
-            if (x==5){ //button 3 sends button C command
+            if (x==13){ //button 14 sends button V command
               radiopacket[0] = 'V';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("White Sequence");
-              oled.setCursor(50,16);
-              oled.print("Pls/Chs/Pls/Sol");
+              oled.print("White");
+              oled.setCursor(0,16);
+              oled.print("Sequence");
               oled.display();  
             } 
-            if (x==6){ //button 3 sends button C command
+            if (x==14){ //button 15 sends button W command
               radiopacket[0] = 'W';
+              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("Solid");
-              oled.setCursor(50,16);
+              oled.setCursor(0,16);
               oled.print("White");
               oled.display();  
             } 
-            if (x==7){ //button 8 sends button H command
+            if (x==15){ //button 16 sends button X command
               radiopacket[0] = 'X';
              oled.clearDisplay();
               oled.setCursor(0,0);
@@ -543,8 +528,6 @@ void loop() {
             }
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested
 }
-
-
 
 Serial.print("Sending "); 
           Serial.println(radiopacket[0]);
