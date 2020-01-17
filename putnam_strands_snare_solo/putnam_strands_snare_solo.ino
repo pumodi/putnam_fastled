@@ -233,33 +233,33 @@ void ledMode(int i) {
             break;
     case 7: HUE=0; BRIGHTNESS=0; Solid();     // off
             break;
-    case 8:     // Show Start. Lights Off
+    case 8: HUE=0; BRIGHTNESS=0; Solid();    // Show Start. Lights Off
             break;
-    case 9:     // Monolith Powers On
+    case 9: HUE=0; BRIGHTNESS=0; Solid();    // Monolith Powers On
             break;
-    case 10:    // Monolith Pulse and Dim
+    case 10: HUE=0; BRIGHTNESS=0; Solid();   // Monolith Pulse and Dim
             break;
     case 11:   // Snare Solo MS115
             break;
-    case 12:   // Monolith Red Pulse
+    case 12: HUE=0; BRIGHTNESS=0; Solid();   // Monolith Red Pulse
             break;
-    case 13:   // Monolith Red Strobe
+    case 13: HUE=0; BRIGHTNESS=0; Solid();   // Monolith Red Strobe
             break;
-    case 14:      // Monolith EFX
+    case 14:  HUE=0; BRIGHTNESS=0; Solid();     // Monolith EFX
             break;
-    case 15:  // Monolith Solid Blue
+    case 15: HUE=0; BRIGHTNESS=0; Solid();  // Monolith Solid Blue
             break;
-    case 16:  // Monolith and Snares, Solid Green
+    case 16: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid(); // Monolith and Snares, Solid Green
             break;
-    case 17: // Add Basses
+    case 17: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();// Add Basses
             break;
-    case 20:    // Add Quads
+    case 20: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();   // Add Quads
             break;
-    case 21:   // All On w/EFX
+    case 21: Sparkle(random(255), random(255), random(255), 0); // All On w/EFX
             break;
-    case 22:   // White Sequence.  Pulse/Chase/Pulse/Solid. 
+    case 22: theaterChase(0xFF,0xFF,0xFF,50);  // White Sequence.  Pulse/Chase/Pulse/Solid. 
             break;
-    case 23:  // Solid White
+    case 23: SATURATION=0; BRIGHTNESS=200; Solid();  // Solid White
             break;
     default: HUE=0; BRIGHTNESS=0; Solid();     // off
             break;
@@ -273,34 +273,49 @@ void Solid() {
 }
 
 // Animations --------------------------------------------------
-void Breath(int BreathBrightness, int z) { 
-  for(int i = 0; i > -1; i = i+z){
-    if(i == 250) {
-      z = -2;
-    }
-    HUE=0; SATURATION=255; BRIGHTNESS=BreathBrightness; Solid(); 
-    BreathBrightness = BreathBrightness + z;
+void FadeInOut(byte red, byte green, byte blue){
+  float r, g, b;
+     
+  for(int k = 0; k < 256; k=k+1) {
+    r = (k/256.0)*red;
+    g = (k/256.0)*green;
+    b = (k/256.0)*blue;
+    setAll(r,g,b);
+    showStrip();
+  }
+     
+  for(int k = 255; k >= 0; k=k-2) {
+    r = (k/256.0)*red;
+    g = (k/256.0)*green;
+    b = (k/256.0)*blue;
+    setAll(r,g,b);
+    showStrip();
   }
 }
 
-void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
-  int Position=0;
-  for(int j=0; j<NUM_LEDS*2; j++)
-  {
-      Position++; // = 0; //Position + Rate;
-      for(int i=0; i<NUM_LEDS; i++) {
-        // sine wave, 3 offset waves make a rainbow!
-        //float level = sin(i+Position) * 127 + 128;
-        //setPixel(i,level,0,0);
-        //float level = sin(i+Position) * 127 + 128;
-        setPixel(i,((sin(i+Position) * 127 + 128)/255)*red,
-                   ((sin(i+Position) * 127 + 128)/255)*green,
-                   ((sin(i+Position) * 127 + 128)/255)*blue);
+void theaterChase(byte red, byte green, byte blue, int SpeedDelay) {
+  for (int j=0; j<10; j++) {  //do 10 cycles of chasing
+    for (int q=0; q < 3; q++) {
+      for (int i=0; i < NUM_LEDS; i=i+3) {
+        setPixel(i+q, red, green, blue);    //turn every third pixel on
       }
-      
-      FastLED.show();
-      delay(WaveDelay);
+      showStrip();
+     
+      delay(SpeedDelay);
+     
+      for (int i=0; i < NUM_LEDS; i=i+3) {
+        setPixel(i+q, 0,0,0);        //turn every third pixel off
+      }
+    }
   }
+}
+
+void Sparkle(byte red, byte green, byte blue, int SpeedDelay) {
+  int Pixel = random(NUM_LEDS);
+  setPixel(Pixel,red,green,blue);
+  showStrip();
+  delay(SpeedDelay);
+  setPixel(Pixel,0,0,0);
 }
 
 void PowerOnBlink() {
@@ -308,16 +323,6 @@ void PowerOnBlink() {
 }
 
 // Utility Functions
-
-void FillLEDsFromPaletteColors( uint8_t colorIndex){
-  uint8_t brightness = BRIGHTNESS;
-  
-  for( int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
-    colorIndex += STEPS;
-  }
-}
-
 void setPixel(int Pixel, byte red, byte green, byte blue) {
  #ifdef ADAFRUIT_NEOPIXEL_H
    // NeoPixel
@@ -329,4 +334,22 @@ void setPixel(int Pixel, byte red, byte green, byte blue) {
    leds[Pixel].g = green;
    leds[Pixel].b = blue;
  #endif
+}
+
+void showStrip() {
+ #ifdef ADAFRUIT_NEOPIXEL_H
+   // NeoPixel
+   strip.show();
+ #endif
+ #ifndef ADAFRUIT_NEOPIXEL_H
+   // FastLED
+   FastLED.show();
+ #endif
+}
+
+void setAll(byte red, byte green, byte blue) {
+  for(int i = 0; i < NUM_LEDS; i++ ) {
+    setPixel(i, red, green, blue);
+  }
+  showStrip();
 }
