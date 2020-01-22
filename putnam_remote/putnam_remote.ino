@@ -42,7 +42,7 @@ Adafruit_NeoTrellis trellis;
 #define NUMTRELLIS 1
 #define numKeys (NUMTRELLIS * 16)
 #define INTPIN A2
-int NUM_SCREENS = 3;  // change this number to add more screens
+int NUM_SCREENS = 2;  // change this number to add more screens
 
 
 //define a callback for key presses
@@ -60,7 +60,7 @@ TrellisCallback blink(keyEvent evt){
   trellis.pixels.show();
 
   return 0;
-} 
+}
 
 
 
@@ -95,15 +95,15 @@ int lastTB[8] = {16, 16, 16, 16, 16, 16, 16, 16}; //array to store per-menu Trel
 void setup() {
   delay(500);
   Serial.begin(115200);
-  //while (!Serial) { delay(1); } // wait until serial console is open, 
+  //while (!Serial) { delay(1); } // wait until serial console is open,
   //remove if not tethered to computer
 
 pinMode(PIN_ENCODER_SWITCH, INPUT_PULLUP);//set encoder push switch pin to input pullup
 pinMode(INTPIN, INPUT);
-  
+
  // digitalPinToInterrupt(10); //on M0, Encoder library doesn't auto set these as interrupts
  // digitalPinToInterrupt(12);
-  
+
   // Initialize OLED display
   oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);  // initialize with the I2C addr 0x3C (for the 128x32)
   oled.setTextWrap(false);
@@ -116,7 +116,7 @@ pinMode(INTPIN, INPUT);
   pinMode(BUTTON_A, INPUT_PULLUP);
   pinMode(BUTTON_B, INPUT_PULLUP);
   pinMode(BUTTON_C, INPUT_PULLUP);
-  pinMode(LED, OUTPUT);     
+  pinMode(LED, OUTPUT);
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
 
@@ -125,13 +125,13 @@ pinMode(INTPIN, INPUT);
   delay(10);
   digitalWrite(RFM69_RST, LOW);
   delay(10);
-  
+
   if (!rf69.init()) {
     Serial.println("RFM69 radio init failed");
     while (1);
   }
   Serial.println("RFM69 radio init OK!");
-  
+
   // Defaults after init are 434.0MHz, modulation GFSK_Rb250Fd250, +13dbM (for low power module)
   // No encryption
   if (!rf69.setFrequency(RF69_FREQ)) {
@@ -146,7 +146,7 @@ pinMode(INTPIN, INPUT);
   uint8_t key[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
   rf69.setEncryptionKey(key);
-  
+
   pinMode(LED, OUTPUT);
 
   Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");
@@ -197,13 +197,13 @@ pinMode(INTPIN, INPUT);
 //////////////////////////////////////////////////////////////////
 
 void loop() {
-   
+
 
 /*************Rotary Encoder Menu***********/
 
     //check the encoder knob, set the current position as origin
     long newpos = knob.read() / 4;//divide for encoder detents
-    
+
     /* // for debugging
      Serial.print("pos=");
      Serial.print(pos);
@@ -214,7 +214,7 @@ void loop() {
     if(newpos != pos){
       int diff = newpos - pos;//check the different between old and new position
       if(diff>=1){
-        m++; 
+        m++;
         m = (m+NUM_SCREENS) % NUM_SCREENS;//modulo to roll over the m variable through the list size
        }
 
@@ -242,7 +242,7 @@ void loop() {
 
       int p; //for drawing bullet point menu location pixels
       int q;
-  
+
       if (m==0){
         for(p=4;p<8;p++){
           for(q=0;q<4;q++){
@@ -287,19 +287,19 @@ void loop() {
         trellis.pixels.setPixelColor(15, 100,100,100);
         trellis.pixels.show();
       }
- 
-  
-      
+
+
+
       oled.display();
     }
 
     char radiopacket[20];
-   
-   
+
+
 /**************Solids**************/
-       
+
         if(m==0){ //next menu item
-       
+
             if (x==0){ //button 1 sends button A command
               radiopacket[0] = 'A';
               oled.clearDisplay();
@@ -307,7 +307,7 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("RED");
-              oled.display(); 
+              oled.display();
             }
             if (x==1){ //button 2 sends button B command
               radiopacket[0] = 'B';
@@ -316,7 +316,7 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("GOLD");
-              oled.display(); 
+              oled.display();
             }
             if (x==2){ //button 3 sends button C command
               radiopacket[0] = 'C';
@@ -325,8 +325,8 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("GREEN");
-              oled.display();  
-            } 
+              oled.display();
+            }
 
             if (x==3){ //button 4 sends button D command
               radiopacket[0] = 'D';
@@ -335,7 +335,7 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("BLUE");
-              oled.display();  
+              oled.display();
             }
 
             if (x==4){ //button 5 sends button E command
@@ -345,7 +345,7 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("PURPLE");
-              oled.display(); 
+              oled.display();
             }
             if (x==5){ //button 6 sends button F command
               radiopacket[0] = 'F';
@@ -354,7 +354,7 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("PINK");
-              oled.display(); 
+              oled.display();
             }
             if (x==6){ //button 7 sends button G command
               radiopacket[0] = 'G';
@@ -363,8 +363,8 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("WHITE");
-              oled.display();  
-            } 
+              oled.display();
+            }
 
             if (x==7){ //button 8 sends button H command
               radiopacket[0] = 'H';
@@ -373,17 +373,17 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("OFF");
-              oled.display();  
+              oled.display();
             }
-     
+
 
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested
 }
 
 /**************Mvmt 1+2+3**************/
-       
+
         if(m==1){ //next menu item
-       
+
             if (x==0){ //button 1 sends button A command
               radiopacket[0] = 'I';
               oled.clearDisplay();
@@ -391,7 +391,7 @@ void loop() {
               oled.print("Lights Off");
               oled.setCursor(0,16);
               oled.print("Don't Panic!");
-              oled.display(); 
+              oled.display();
             }
             if (x==1){ //button 2 sends button B command
               radiopacket[0] = 'J';
@@ -400,7 +400,7 @@ void loop() {
               oled.print("Monolith");
               oled.setCursor(0,16);
               oled.print("Power On");
-              oled.display(); 
+              oled.display();
             }
             if (x==2){ //button 3 sends button C command
               radiopacket[0] = 'K';
@@ -409,8 +409,8 @@ void loop() {
               oled.print("Monlith");
               oled.setCursor(0,16);
               oled.print("Pulse/Dim");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==3){ //button 4 sends button D command
               radiopacket[0] = 'L';
              oled.clearDisplay();
@@ -418,7 +418,7 @@ void loop() {
               oled.print("Snare Solo");
               oled.setCursor(0,16);
               oled.print("MS 115");
-              oled.display();  
+              oled.display();
             }
             if (x==4){ //button 5 sends button E command
               radiopacket[0] = 'M';
@@ -427,7 +427,7 @@ void loop() {
               oled.print("Monolith");
               oled.setCursor(0,16);
               oled.print("Warmup");
-              oled.display(); 
+              oled.display();
             }
             if (x==5){ //button 6 sends button F command
               radiopacket[0] = 'N';
@@ -436,7 +436,7 @@ void loop() {
               oled.print("Monolith");
               oled.setCursor(0,16);
               oled.print("Red Pulse");
-              oled.display(); 
+              oled.display();
             }
             if (x==6){ //button 7 sends button G command
               radiopacket[0] = 'O';
@@ -445,8 +445,8 @@ void loop() {
               oled.print("Monolith");
               oled.setCursor(0,16);
               oled.print("Red Strobe");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==7){ //button 8 sends button H command
               radiopacket[0] = 'P';
              oled.clearDisplay();
@@ -454,7 +454,7 @@ void loop() {
               oled.print("Monolith");
               oled.setCursor(0,16);
               oled.print("FX");
-              oled.display();  
+              oled.display();
             }
             if (x==8){ //button 9 sends button Q command
               radiopacket[0] = 'Q';
@@ -463,7 +463,7 @@ void loop() {
               oled.print("Monolith");
               oled.setCursor(0,16);
               oled.print("Solid Blue");
-              oled.display(); 
+              oled.display();
             }
             if (x==9){ //button 10 sends button R command
               radiopacket[0] = 'R';
@@ -472,7 +472,7 @@ void loop() {
               oled.print("Mon + Sn");
               oled.setCursor(0,16);
               oled.print("Green");
-              oled.display(); 
+              oled.display();
             }
             if (x==10){ //button 11 sends button S command
               radiopacket[0] = 'S';
@@ -481,8 +481,8 @@ void loop() {
               oled.print("Mon + Basses");
               oled.setCursor(0,16);
               oled.print("Green");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==11){ //button 12 sends button T command
               radiopacket[0] = 'T';
              oled.clearDisplay();
@@ -490,8 +490,8 @@ void loop() {
               oled.print("Mon + Quads");
               oled.setCursor(0,16);
               oled.print("Green");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==12){ //button 13 sends button U command
               radiopacket[0] = 'U';
              oled.clearDisplay();
@@ -499,8 +499,8 @@ void loop() {
               oled.print("All On");
               oled.setCursor(0,16);
               oled.print("With FX");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==13){ //button 14 sends button V command
               radiopacket[0] = 'V';
              oled.clearDisplay();
@@ -508,8 +508,8 @@ void loop() {
               oled.print("White");
               oled.setCursor(0,16);
               oled.print("Sequence");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==14){ //button 15 sends button W command
               radiopacket[0] = 'W';
               oled.clearDisplay();
@@ -517,32 +517,32 @@ void loop() {
               oled.print("Solid");
               oled.setCursor(0,16);
               oled.print("White");
-              oled.display();  
-            } 
+              oled.display();
+            }
             if (x==15){ //button 16 sends button X command
               radiopacket[0] = 'X';
              oled.clearDisplay();
               oled.setCursor(0,0);
               oled.print("All Off");
-              oled.display();  
+              oled.display();
             }
  trellis.pixels.show(); // tell the trellis to set the LEDs we requested
 }
 
-Serial.print("Sending "); 
+Serial.print("Sending ");
           Serial.println(radiopacket[0]);
 
           rf69.send((uint8_t *)radiopacket, strlen(radiopacket));
-          rf69.waitPacketSent(); 
+          rf69.waitPacketSent();
           //reset packet so unassigned buttons don't send last command
-          radiopacket[0]='Z'; //also being used to turn off NeoPixels 
+          radiopacket[0]='Z'; //also being used to turn off NeoPixels
           //from any unused button
 
-          if (rf69.waitAvailableTimeout(1000)) { 
-            // Should be a message for us now   
+          if (rf69.waitAvailableTimeout(1000)) {
+            // Should be a message for us now
             uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
             uint8_t len = sizeof(buf);
-            
+
             if (! rf69.recv(buf, &len)) {
               Serial.println("Receive failed");
               return;
@@ -550,10 +550,10 @@ Serial.print("Sending ");
             digitalWrite(LED, HIGH);
             rf69.printBuffer("Received: ", buf, len);
             buf[len] = 0;
-            
-            //Serial.print("TX Got: "); 
+
+            //Serial.print("TX Got: ");
             //Serial.println((char*)buf);
-            Serial.print("RSSI: "); 
+            Serial.print("RSSI: ");
             Serial.println(rf69.lastRssi(), DEC);
 
             //delay(1000);//chill for a moment before returning the message to RX unit
@@ -562,18 +562,18 @@ Serial.print("Sending ");
             //oled.clearDisplay();
             //oled.print((char*)buf[0]);
             //oled.print("RSSI: "); oled.print(rf69.lastRssi());
-            //oled.display(); 
-            
-            
+            //oled.display();
+
+
             digitalWrite(LED, LOW);
           }
 
           //lastButton=i;//set for next pass through to turn this one off
-      
+
 
        trellis.read();
      delay(100); //the NeoTrellis has a resolution of around 60hz
-    
+
  }
 
 
@@ -599,7 +599,5 @@ void clearPixels() {
     trellis.pixels.setPixelColor(i, 0x000000);
     trellis.pixels.show();
     delay(2);
-  }  
+  }
 }
-
- 

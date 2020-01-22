@@ -12,7 +12,7 @@
 #include <FastLED.h>
 
 #define LED_PIN  12
-#define NUM_LEDS    256    
+#define NUM_LEDS    256
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 
@@ -30,11 +30,11 @@ CRGBArray<NUM_LEDS> leds;
 CRGBPalette16 currentPalette( CRGB::Black);
 CRGBPalette16 targetPalette( PartyColors_p );
 TBlendType    currentBlending;
-    
-int STEPS = 20;         
-int HUE = 200;    // starting color          
-int SATURATION = 255;          
-int BRIGHTNESS = 200; 
+
+int STEPS = 20;
+int HUE = 200;    // starting color
+int SATURATION = 255;
+int BRIGHTNESS = 200;
 
 /************ Radio Setup ***************/
 
@@ -56,8 +56,8 @@ void setup() {
   delay( 1000 ); // power-up safety delay
   FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
-  pinMode(LED, OUTPUT);  
-     
+  pinMode(LED, OUTPUT);
+
   pinMode(RFM69_RST, OUTPUT);
   digitalWrite(RFM69_RST, LOW);
 
@@ -68,13 +68,13 @@ void setup() {
   delay(10);
   digitalWrite(RFM69_RST, LOW);
   delay(10);
-  
+
  /* if (!rf69.init()) {
     Serial.println("RFM69 radio init failed");
     while (1);
   }
   Serial.println("RFM69 radio init OK!");
-  
+
   if (!rf69.setFrequency(RF69_FREQ)) {
     Serial.println("setFrequency failed");
   } */
@@ -85,7 +85,7 @@ void setup() {
   uint8_t key[] = { 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08};
   rf69.setEncryptionKey(key);
-  
+
   pinMode(LED, OUTPUT);
 
  /* Serial.print("RFM69 radio @");  Serial.print((int)RF69_FREQ);  Serial.println(" MHz");*/
@@ -95,77 +95,77 @@ void setup() {
 
 void loop(){
   if (rf69.waitAvailableTimeout(100)) {
-    // Should be a message for us now   
+    // Should be a message for us now
     uint8_t len = sizeof(buf);
-    
+
     /*if (! rf69.recv(buf, &len)) {
       Serial.println("Receive failed");
       return;
     }*/
-    
+
     char radiopacket[20] = "Button #";//prep reply message to send
 
     if (buf[0]=='A'){ //the letter sent from the button
       ledMode(0);
-      radiopacket[8] = 'A';   
+      radiopacket[8] = 'A';
     }
      else if (buf[0]=='B'){ //the letter sent from the button
       ledMode(1);
-      radiopacket[8] = 'B';    
+      radiopacket[8] = 'B';
     }
-    
+
      else if (buf[0]=='C'){ //the letter sent from the button
       ledMode(2);
-       radiopacket[8] = 'C';    
+       radiopacket[8] = 'C';
     }
      else if (buf[0]=='D'){ //the letter sent from the button
       ledMode(3);
-      radiopacket[8] = 'D';    
+      radiopacket[8] = 'D';
     }
          else if (buf[0]=='E'){ //the letter sent from the button
       ledMode(4);
-      radiopacket[8] = 'E';    
+      radiopacket[8] = 'E';
     }
-    
+
      else if (buf[0]=='F'){ //the letter sent from the button
       ledMode(5);
-       radiopacket[8] = 'F';    
+       radiopacket[8] = 'F';
     }
      else if (buf[0]=='G'){ //the letter sent from the button
       ledMode(6);
       radiopacket[8] = 'G';
-    } 
+    }
      else if (buf[0]=='H'){ //the letter sent from the button
       ledMode(7);
-      radiopacket[8] = 'H';    
+      radiopacket[8] = 'H';
     }
      else if (buf[0]=='I'){ //the letter sent from the button
       ledMode(8);
-       radiopacket[8] = 'I';    
+       radiopacket[8] = 'I';
     }
      else if (buf[0]=='J'){ //the letter sent from the button
       ledMode(9);
-      radiopacket[8] = 'J';    
-    }     
+      radiopacket[8] = 'J';
+    }
      else if (buf[0]=='K'){ //the letter sent from the button
       ledMode(10);
-      radiopacket[8] = 'K';    
+      radiopacket[8] = 'K';
     }
      else if (buf[0]=='L'){ //the letter sent from the button
       ledMode(11);
-       radiopacket[8] = 'L';    
+       radiopacket[8] = 'L';
     }
      else if (buf[0]=='M'){ //the letter sent from the button
       ledMode(12);
-      radiopacket[8] = 'M';    
+      radiopacket[8] = 'M';
     }
      else if (buf[0]=='N'){ //the letter sent from the button
       ledMode(13);
-      radiopacket[8] = 'N';    
+      radiopacket[8] = 'N';
     }
      else if (buf[0]=='O'){ //the letter sent from the button
       ledMode(14);
-      radiopacket[8] = 'O';    
+      radiopacket[8] = 'O';
     }
      else if (buf[0]=='P'){ //the letter sent from the button
       ledMode(15);
@@ -217,68 +217,46 @@ void loop(){
 
 void ledMode(int i) {
   switch(i){
-    case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();    // red
-            break;
-    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();   // gold
-            break;
-    case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();    // green
-            break;
-    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();   // Blue   
-            break;
-    case 4: HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();    // purple
-            break;
-    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();     // pink
-            break;
-    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();     // white
-            break;
-    case 7: HUE=0; BRIGHTNESS=0; Solid();     // off
-            break;
-    case 8:     // Show Start. Lights Off
-            break;
-    case 9:     // Monolith Powers On
-            break;
-    case 10:    // Monolith Pulse and Dim
-            break;
-    case 11:   // Snare Solo MS115
-            break;
-    case 12:   // Monolith Red Pulse
-            break;
-    case 13:   // Monolith Red Strobe
-            break;
-    case 14:      // Monolith EFX
-            break;
-    case 15:  // Monolith Solid Blue
-            break;
-    case 16:  // Monolith and Snares, Solid Green
-            break;
-    case 17: // Add Basses
-            break;
-    case 20:    // Add Quads
-            break;
-    case 21:   // All On w/EFX
-            break;
-    case 22:   // White Sequence.  Pulse/Chase/Pulse/Solid. 
-            break;
-    case 23:  // Solid White
-            break;
-    default: HUE=0; BRIGHTNESS=0; Solid();     // off
-            break;
+    case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// red
+    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;// gold
+    case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// green
+    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Blue
+    case 4: HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();break;// purple
+    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();break;// pink
+    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// white
+    case 7: HUE=0; BRIGHTNESS=0; Solid();break;// off
+    case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
+    case 9: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Powers On
+    case 10: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Pulse and Dim
+    case 11:HUE=0; BRIGHTNESS=0; Solid();break;  // Snare Solo MS115
+    case 12:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Dim to Increase
+    case 13:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Red Pulse
+    case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Strobe
+    case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith EFX
+    case 16:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Solid Blue
+    case 17:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith and Snares, Solid Green
+    case 18:HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses
+    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads
+    case 20:theaterChase(0xFF,0x00,0x00,50);break;  // All On w/EFX
+    case 21:theaterChase(0xFF,0xFF,0xFF,50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
+    case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// Solid White
+    case 23:HUE=0; BRIGHTNESS=0; Solid();break;
   }
 }
 
 // SOLID ----------------------------------------------------
 void Solid() {
-   fill_solid(leds, NUM_LEDS, CHSV(HUE, SATURATION, BRIGHTNESS)); 
-   FastLED.show(); 
+   fill_solid(leds, NUM_LEDS, CHSV(HUE, SATURATION, BRIGHTNESS));
+   FastLED.show();
 }
 
 // Animations --------------------------------------------------
-void Breath(int BreathBrightness, int z) { 
+void Breath(int BreathBrightness, int z) {
   for(int i = 0; i > -1; i = i+z){
     if(i == 250) {
       z = -2;
     }
-    HUE=0; SATURATION=255; BRIGHTNESS=BreathBrightness; Solid(); 
+    HUE=0; SATURATION=255; BRIGHTNESS=BreathBrightness; Solid();
     BreathBrightness = BreathBrightness + z;
   }
 }
@@ -297,7 +275,7 @@ void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
                    ((sin(i+Position) * 127 + 128)/255)*green,
                    ((sin(i+Position) * 127 + 128)/255)*blue);
       }
-      
+
       FastLED.show();
       delay(WaveDelay);
   }
@@ -311,7 +289,7 @@ void PowerOnBlink() {
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex){
   uint8_t brightness = BRIGHTNESS;
-  
+
   for( int i = 0; i < NUM_LEDS; i++) {
     leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
     colorIndex += STEPS;
