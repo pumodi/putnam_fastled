@@ -12,9 +12,10 @@
 #include <FastLED.h>
 
 #define LED_PIN  12
-#define NUM_LEDS    58
+#define NUM_LEDS    64
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
+#define MAX_BRIGHTNESS 255
 
 CRGBArray<NUM_LEDS> leds;
 
@@ -36,6 +37,11 @@ int SATURATION = 255;
 int BRIGHTNESS = 200;
 int startUpHasRun = 0;
 
+uint16_t frame = 0;      //I think I might be able to move this variable to the void loop() scope and save some CPU
+uint16_t animateSpeed = 100;            //Number of frames to increment per loop
+uint8_t  animation = 10;    //Active animation
+uint8_t brightness = 50;    //Global brightness percentage
+
 /************ Radio Setup ***************/
 
 // Change to 434.0 or other frequency, must match RX's freq!
@@ -51,6 +57,9 @@ uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
 bool oldState = HIGH;
+
+int period = 1000;
+unsigned long time_now = 0;
 
 void setup() {
   delay( 1000 ); // power-up safety delay
@@ -95,10 +104,7 @@ void setup() {
 }
 
 void loop(){
-  
-}
-
-void Update(){
+  tune_now = millis();
   if (rf69.waitAvailableTimeout(1)) {
     // Should be a message for us now
     uint8_t len = sizeof(buf);
@@ -234,8 +240,8 @@ void ledMode(int i) {
     case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
     case 18:HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses
     case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads
-    case 20:theaterChase(0xFF,0x00,0x00);break;  // All On w/EFX
-    case 21:theaterChase(0xFF,0xFF,0xFF);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
+    case 20:theaterChase(0xFF,0x00,0x00, 50);break;  // All On w/EFX
+    case 21:sparkle(0xFF,0xFF,0xFF, 50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
     case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// Solid White
     case 23:HUE=0; BRIGHTNESS=0; Solid();break;
   }
@@ -268,20 +274,32 @@ void FadeInOut(byte red, byte green, byte blue){
   }
 }
 
-void theaterChase(byte red, byte green, byte blue) {
+void theaterChase(byte red, byte green, byte blue, int delayTime) {
   for (int j=0; j<100; j++) {  //do 10 cycles of chasing
     for (int q=0; q < 3; q++) {
       for (int i=0; i < NUM_LEDS; i=i+3) {
         setPixel(i+q, red, green, blue);    //turn every third pixel on
       }
       showStrip();
-
+      while(millis() < time_now + delayTime){
+    
+      }
       for (int i=0; i < NUM_LEDS; i=i+3) {
         setPixel(i+q, 0,0,0);        //turn every third pixel off
       }
     }
   }
   ledMode(23);
+}
+
+void Sparkle(byte red, byte green, byte blue, int delayTime) {
+  int Pixel = random(NUM_LEDS);
+  setPixel(Pixel,red,green,blue);
+  showStrip();
+  while(millis() < time_now + delayTime){
+    
+  }
+  setPixel(Pixel,0,0,0);
 }
 
 void PowerOnBlink() {
