@@ -31,7 +31,6 @@ CRGBPalette16 currentPalette( CRGB::Black);
 CRGBPalette16 targetPalette( PartyColors_p );
 TBlendType    currentBlending;
 
-int STEPS = 20;
 int HUE = 200;    // starting color
 int SATURATION = 255;
 int BRIGHTNESS = 200;
@@ -236,7 +235,7 @@ void ledMode(int i) {
     case 16:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Solid Blue
     case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
     case 18:HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses
-    case 19:HUE=0; BRIGHTNESS=0; Solid();break;// Add Quads
+    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads
     case 20:theaterChase(0xFF,0x00,0x00,50);break;  // All On w/EFX
     case 21:theaterChase(0xFF,0xFF,0xFF,50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
     case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// Solid White
