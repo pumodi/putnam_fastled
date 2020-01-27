@@ -24,6 +24,10 @@ CRGBArray<NUM_LEDS> leds;
 #include <Wire.h>
 
 #define LED 13
+#define LED 12
+#define LED 11
+#define LED 10
+#define LED 9
 
 /********** NeoPixel Setup *************/
 

@@ -251,34 +251,42 @@ void Solid() {
 }
 
 // Animations --------------------------------------------------
-void Breath(int BreathBrightness, int z) {
-  for(int i = 0; i > -1; i = i+z){
-    if(i == 250) {
-      z = -2;
-    }
-    HUE=0; SATURATION=255; BRIGHTNESS=BreathBrightness; Solid();
-    BreathBrightness = BreathBrightness + z;
+void FadeInOut(byte red, byte green, byte blue){
+  float r, g, b;
+
+  for(int k = 0; k < 256; k=k+1) {
+    r = (k/256.0)*red;
+    g = (k/256.0)*green;
+    b = (k/256.0)*blue;
+    setAll(r,g,b);
+    showStrip();
+  }
+
+  for(int k = 255; k >= 0; k=k-2) {
+    r = (k/256.0)*red;
+    g = (k/256.0)*green;
+    b = (k/256.0)*blue;
+    setAll(r,g,b);
+    showStrip();
   }
 }
 
-void RunningLights(byte red, byte green, byte blue, int WaveDelay) {
-  int Position=0;
-  for(int j=0; j<NUM_LEDS*2; j++)
-  {
-      Position++; // = 0; //Position + Rate;
-      for(int i=0; i<NUM_LEDS; i++) {
-        // sine wave, 3 offset waves make a rainbow!
-        //float level = sin(i+Position) * 127 + 128;
-        //setPixel(i,level,0,0);
-        //float level = sin(i+Position) * 127 + 128;
-        setPixel(i,((sin(i+Position) * 127 + 128)/255)*red,
-                   ((sin(i+Position) * 127 + 128)/255)*green,
-                   ((sin(i+Position) * 127 + 128)/255)*blue);
+void theaterChase(byte red, byte green, byte blue, int SpeedDelay) {
+  for (int j=0; j<100; j++) {  //do 10 cycles of chasing
+    for (int q=0; q < 3; q++) {
+      for (int i=0; i < NUM_LEDS; i=i+3) {
+        setPixel(i+q, red, green, blue);    //turn every third pixel on
       }
+      showStrip();
 
-      FastLED.show();
-      delay(WaveDelay);
+      delay(SpeedDelay);
+
+      for (int i=0; i < NUM_LEDS; i=i+3) {
+        setPixel(i+q, 0,0,0);        //turn every third pixel off
+      }
+    }
   }
+  ledMode(23);
 }
 
 void PowerOnBlink() {
@@ -286,16 +294,6 @@ void PowerOnBlink() {
 }
 
 // Utility Functions
-
-void FillLEDsFromPaletteColors( uint8_t colorIndex){
-  uint8_t brightness = BRIGHTNESS;
-
-  for( int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
-    colorIndex += STEPS;
-  }
-}
-
 void setPixel(int Pixel, byte red, byte green, byte blue) {
  #ifdef ADAFRUIT_NEOPIXEL_H
    // NeoPixel
@@ -307,4 +305,22 @@ void setPixel(int Pixel, byte red, byte green, byte blue) {
    leds[Pixel].g = green;
    leds[Pixel].b = blue;
  #endif
+}
+
+void showStrip() {
+ #ifdef ADAFRUIT_NEOPIXEL_H
+   // NeoPixel
+   strip.show();
+ #endif
+ #ifndef ADAFRUIT_NEOPIXEL_H
+   // FastLED
+   FastLED.show();
+ #endif
+}
+
+void setAll(byte red, byte green, byte blue) {
+  for(int i = 0; i < NUM_LEDS; i++ ) {
+    setPixel(i, red, green, blue);
+  }
+  showStrip();
 }
