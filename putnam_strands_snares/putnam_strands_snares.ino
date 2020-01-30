@@ -236,8 +236,8 @@ void ledMode(int i) {
     case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
     case 12:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Dim to Increase
     case 13:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Red Pulse
-    case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Strobe
-    case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith EFX
+    case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Sparkle
+    case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Purple Theater Chase
     case 16:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Solid Blue
     case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
     case 18:HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses, remove snares
