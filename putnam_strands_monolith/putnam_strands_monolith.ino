@@ -220,6 +220,7 @@ void loop(){
 
 void ledMode(int i) {
   switch(i){
+    // Solids
     case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// red
     case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;// gold
     case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// green
@@ -228,21 +229,23 @@ void ledMode(int i) {
     case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();break;// pink
     case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// white
     case 7: HUE=0; BRIGHTNESS=0; Solid();break;// off
+
+    // Show Events
     case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Powers On
-    case 10: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Pulse and Dim
-    case 11:HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break; // Snare Solo MS115
+    case 9:// Monolith Powers On
+    case 10:// Monolith Pulse and Dim
+    case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
     case 12:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Dim to Increase
     case 13:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Red Pulse
     case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Strobe
     case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith EFX
     case 16:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Solid Blue
     case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
-    case 18:HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses
+    case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
     case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads
     case 20:theaterChase(0xFF,0x00,0x00, 50);break;  // All On w/EFX
     case 21:sparkle(0xFF,0xFF,0xFF, 50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
-    case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// Solid White
+    case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// All colors on until end
     case 23:HUE=0; BRIGHTNESS=0; Solid();break;
   }
 }
@@ -301,7 +304,7 @@ void RunningLights(byte red, byte green, byte blue, int delayTime) {
 
     FastLED.show();
     while(millis() < time_now + delayTime){
-    
+
     }
   }
 }
@@ -314,7 +317,7 @@ void theaterChase(byte red, byte green, byte blue, int delayTime) {
       }
       showStrip();
       while(millis() < time_now + delayTime){
-    
+
       }
       for (int i=0; i < NUM_LEDS; i=i+3) {
         setPixel(i+q, 0,0,0);        //turn every third pixel off
@@ -329,7 +332,7 @@ void Sparkle(byte red, byte green, byte blue, int delayTime) {
   setPixel(Pixel,red,green,blue);
   showStrip();
   while(millis() < time_now + delayTime){
-    
+
   }
   setPixel(Pixel,0,0,0);
 }
