@@ -269,21 +269,21 @@ void loop() {
         }
         oled.print("Convergence");
         clearPixels();
-        trellis.pixels.setPixelColor(0, 0,255,0);
-        trellis.pixels.setPixelColor(1, 0,255,0);
-        trellis.pixels.setPixelColor(2, 0,255,0);
-        trellis.pixels.setPixelColor(3, 0,255,0);
-        trellis.pixels.setPixelColor(4, 0,255,0);
-        trellis.pixels.setPixelColor(5, 0,255,0);
-        trellis.pixels.setPixelColor(6, 0,255,0);
-        trellis.pixels.setPixelColor(7, 0,255,0);
-        trellis.pixels.setPixelColor(8, 0,255,0);
+        trellis.pixels.setPixelColor(0, 100,100,100);
+        trellis.pixels.setPixelColor(1, 255,51,51);
+        trellis.pixels.setPixelColor(2, 255,51,51);
+        trellis.pixels.setPixelColor(3, 255,51,51);
+        trellis.pixels.setPixelColor(4, 255,51,51);
+        trellis.pixels.setPixelColor(5, 255,51,51);
+        trellis.pixels.setPixelColor(6, 255,51,51);
+        trellis.pixels.setPixelColor(7, 204,0,204);
+        trellis.pixels.setPixelColor(8, 0,128,255);
         trellis.pixels.setPixelColor(9, 0,255,0);
         trellis.pixels.setPixelColor(10, 0,255,0);
         trellis.pixels.setPixelColor(11, 0,255,0);
-        trellis.pixels.setPixelColor(12, 0,255,0);
-        trellis.pixels.setPixelColor(13, 0,255,0);
-        trellis.pixels.setPixelColor(14, 0,255,0);
+        trellis.pixels.setPixelColor(12, 255,255,0);
+        trellis.pixels.setPixelColor(13, 255,255,0);
+        trellis.pixels.setPixelColor(14, 255,255,0);
         trellis.pixels.setPixelColor(15, 100,100,100);
         trellis.pixels.show();
       }

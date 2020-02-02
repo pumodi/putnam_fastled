@@ -11,10 +11,10 @@
 
 #include <FastLED.h>
 
-#define NUM_LEDS    256
+#define NUM_LEDS    128
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define MAX_BRIGHTNESS 255
+#define MAX_BRIGHTNESS 128
 
 CRGBArray<NUM_LEDS> leds;
 
@@ -35,6 +35,7 @@ int HUE = 200;    // starting color
 int SATURATION = 255;
 int BRIGHTNESS = 200;
 int startUpHasRun = 0;
+int currentMode = 0;
 
 uint16_t frame = 0;      //I think I might be able to move this variable to the void loop() scope and save some CPU
 uint16_t animateSpeed = 100;            //Number of frames to increment per loop
@@ -234,22 +235,22 @@ void ledMode(int i) {
     case 7: HUE=0; BRIGHTNESS=0; Solid();break;// off
 
     // Show Events
-    case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: powerOn();break;// Monolith Powers On
-    case 10:FadeInOut(0x93,0x00,0x00);;break;// Monolith Pulse and Dim
-    case 11:HUE=0; SATURATION=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
-    case 12:FadeInOut(0x93,0x00,0x00);break; // Monolith Dim to Increase
-    case 13:FadeInOut(0x93,0x00,0x00);break; // Monolith Red Pulse
-    case 14:sparkle(0x93,0x00,0x00,20);break;// Monolith Red Sparkle
-    case 15:theaterChase(0x66,0x33,0x99,20)break;// Monolith Purple Theater Chase
-    case 16:HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
-    case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
-    case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
-    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
-    case 20:theaterChase(0x2e,0x8b,0x57, 20);break;  // Chaos Cycle All On w/EFX
-    case 21:sparkle(0xFF,0xFF,0xFF, 20);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
-    case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// All colors on until end
-    case 23:HUE=0; BRIGHTNESS=0; Solid();break;
+    case 8: currentMode = 8;Serial.println(currentMode);HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
+    case 9: currentMode = 9;Serial.println(currentMode);FadeIn(0x93,0x00,0x00);break;// Monolith Powers On
+    case 10:currentMode = 10;Serial.println(currentMode);Breath(255,5);break;// Monolith Pulse and Dim
+    case 11:currentMode = 11;Serial.println(currentMode);FadeOut(0x93,0x00,0x00);break; // Snare Solo MS115
+    case 12:currentMode = 12;Serial.println(currentMode);FadeIn(0x93,0x00,0x00);break; // Monolith Dim to Increase
+    case 13:currentMode = 13;Serial.println(currentMode);Breath(255,5);break; // Monolith Red Pulse
+    case 14:currentMode = 14;Serial.println(currentMode);colorWipe(0x93,0x00,0x00,40);break;// Monolith Red Sparkle
+    case 15:currentMode = 15;Serial.println(currentMode);theaterChase(0x66,0x33,0x99,20);break;// Monolith Purple Theater Chase
+    case 16:currentMode = 16;Serial.println(currentMode);HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
+    case 17:currentMode = 17;Serial.println(currentMode);HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
+    case 18:currentMode = 18;Serial.println(currentMode);HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
+    case 19:currentMode = 19;Serial.println(currentMode);HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
+    case 20:currentMode = 20;Serial.println(currentMode);theaterChase(0x2e,0x8b,0x57, 50);break;  // Chaos Cycle All On w/EFX
+    case 21:currentMode = 21;Serial.println(currentMode);colorWipe(0xFF,0xFF,0xFF,0);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
+    case 22:currentMode = 22;Serial.println(currentMode);HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// All colors on until end
+    case 23:currentMode = 23;Serial.println(currentMode);HUE=0; BRIGHTNESS=0; Solid();break;
   }
 }
 
@@ -259,103 +260,6 @@ void Solid() {
    FastLED.show();
 }
 
-// Animations --------------------------------------------------
-void FadeInOut(byte red, byte green, byte blue){
-  float r, g, b;
-
-  for(int k = 0; k < 256; k=k+1) {
-    r = (k/256.0)*red;
-    g = (k/256.0)*green;
-    b = (k/256.0)*blue;
-    setAll(r,g,b);
-    showStrip();
-  }
-
-  for(int k = 255; k >= 0; k=k-2) {
-    r = (k/256.0)*red;
-    g = (k/256.0)*green;
-    b = (k/256.0)*blue;
-    setAll(r,g,b);
-    showStrip();
-  }
-}
-
-void powerOn() {
-  for (int i = 0; i < NUM_LEDS; i++) {
-    setPixel(i, 0xFF,0x00,0x00)
-  }
-}
-
-void Breath(int BreathBrightness, int z) {
-  for (int i = 0; i > -1; i = i + z) {
-    if (i == 250) {
-      z = -2;
-    }
-    HUE = 0; SATURATION = 255; BRIGHTNESS = BreathBrightness; Solid();
-    BreathBrightness = BreathBrightness + z;
-  }
-}
-
-void theaterChase(byte red, byte green, byte blue, int delayTime) {
-  for (int j = 0; j < 200; j++) {
-    for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        setPixel(i+q, red, green, blue);    //turn every third pixel on
-      }
-      showStrip();
-      while(millis() < time_now + delayTime){
-
-      }
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        setPixel(i+q, 0,0,0);        //turn every third pixel off
-      }
-    }
-  }
-  HUE=0; BRIGHTNESS=0; Solid();
-}
-
-void sparkle(byte red, byte green, byte blue, int delayTime) {
-  int Pixel = random(NUM_LEDS);
-  setPixel(Pixel,red,green,blue);
-  showStrip();
-  while(millis() < time_now + delayTime){
-
-  }
-  setPixel(Pixel,0,0,0);
-}
-
 void PowerOnBlink() {
   HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();delay(150);HUE=0; BRIGHTNESS=0; Solid();delay(150);HUE=200; SATURATION=255; BRIGHTNESS=200; Solid(); delay(150);HUE=0; BRIGHTNESS=0; Solid();delay(150);HUE=400; SATURATION=255; BRIGHTNESS=200; Solid(); delay(150);HUE=0; BRIGHTNESS=0; Solid();
-}
-
-// Utility Functions
-void setPixel(int Pixel, byte red, byte green, byte blue) {
- #ifdef ADAFRUIT_NEOPIXEL_H
-   // NeoPixel
-   strip.setPixelColor(Pixel, strip.Color(red, green, blue));
- #endif
- #ifndef ADAFRUIT_NEOPIXEL_H
-   // FastLED
-   leds[Pixel].r = red;
-   leds[Pixel].g = green;
-   leds[Pixel].b = blue;
- #endif
-}
-
-void showStrip() {
- #ifdef ADAFRUIT_NEOPIXEL_H
-   // NeoPixel
-   strip.show();
- #endif
- #ifndef ADAFRUIT_NEOPIXEL_H
-   // FastLED
-   FastLED.show();
- #endif
-}
-
-void setAll(byte red, byte green, byte blue) {
-  for(int i = 0; i < NUM_LEDS; i++ ) {
-    setPixel(i, red, green, blue);
-  }
-  showStrip();
 }

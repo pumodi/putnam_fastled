@@ -10,12 +10,12 @@
 #define FASTLED_INTERRUPT_RETRY_COUNT 4
 
 #include <FastLED.h>
+#include <Ala.h>
 
-#define LED_PIN  12
 #define NUM_LEDS    128
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define MAX_BRIGHTNESS 128
+#define MAX_BRIGHTNESS 156
 
 CRGBArray<NUM_LEDS> leds;
 
@@ -36,6 +36,7 @@ int HUE = 200;    // starting color
 int SATURATION = 255;
 int BRIGHTNESS = 200;
 int startUpHasRun = 0;
+int currentMode = 0;
 
 uint16_t frame = 0;      //I think I might be able to move this variable to the void loop() scope and save some CPU
 uint16_t animateSpeed = 100;            //Number of frames to increment per loop
@@ -63,7 +64,11 @@ unsigned long time_now = 0;
 
 void setup() {
   delay( 1000 ); // power-up safety delay
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 12, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 11, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 10, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 9, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 13, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
   pinMode(LED, OUTPUT);
 
@@ -232,21 +237,21 @@ void ledMode(int i) {
 
     // Show Events
     case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Powers On
-    case 10: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Pulse and Dim
+    case 9: HUE=0; SATURATION=255;BRIGHTNESS=0;FadeIn(10);break;// Monolith Powers On
+    case 10:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Pulse and Dim
     case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
-    case 12:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Dim to Increase
-    case 13:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Red Pulse
-    case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Strobe
-    case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith EFX
-    case 16:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Solid Blue
-    case 17:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith and Snares, Solid Green
-    case 18:HUE=0; BRIGHTNESS=0; Solid();break;// Add Basses, remove snares
-    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads
-    case 20:theaterChase(0xFF,0x00,0x00, 50);break;  // All On w/EFX
-    case 21:sparkle(0xFF,0xFF,0xFF, 50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
-    case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// All colors on until end
-    case 23:HUE=0; BRIGHTNESS=0; Solid();break;
+    case 12:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Dim to Increase
+    case 13:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Red Pulse
+    case 14:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Red Sparkle
+    case 15:HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Purple Theater Chase
+    case 16:HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
+    case 17:SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
+    case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
+    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
+    case 20:HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;break;  // Gold on all
+    case 21:colorWipe(0xFF,0xFF,0xFF,0);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
+    case 22:HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// SOLID WHITE
+    case 23:HUE=0; BRIGHTNESS=0; Solid();break;// ALL OFF
   }
 }
 
@@ -257,17 +262,17 @@ void Solid() {
 }
 
 // Animations --------------------------------------------------
-void FadeInOut(byte red, byte green, byte blue){
-  float r, g, b;
-
-  for(int k = 0; k < 256; k=k+1) {
-    r = (k/256.0)*red;
-    g = (k/256.0)*green;
-    b = (k/256.0)*blue;
-    setAll(r,g,b);
-    showStrip();
+void FadeIn(int SpeedDelay){
+  while(millis() < time_now + SpeedDelay){
+    BRIGHTNESS++;
+    fill_solid(leds, NUM_LEDS, CHSV(0, 255, 255));
+    FastLED.show();
   }
+}
 
+void FadeOut(byte red, byte green, byte blue){
+  float r, g, b;
+  
   for(int k = 255; k >= 0; k=k-2) {
     r = (k/256.0)*red;
     g = (k/256.0)*green;
@@ -277,32 +282,28 @@ void FadeInOut(byte red, byte green, byte blue){
   }
 }
 
-void theaterChase(byte red, byte green, byte blue, int delayTime) {
-  for (int j=0; j<100; j++) {  //do 10 cycles of chasing
-    for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        setPixel(i+q, red, green, blue);    //turn every third pixel on
-      }
+void colorWipe(byte red, byte green, byte blue, int SpeedDelay) {
+  while (currentMode = 14) {
+  for(uint16_t i=0; i<NUM_LEDS; i++) {
+      setPixel(i, red, green, blue);
       showStrip();
-      while(millis() < time_now + delayTime){
+     while(millis() < time_now + SpeedDelay){
 
       }
-      for (int i=0; i < NUM_LEDS; i=i+3) {
-        setPixel(i+q, 0,0,0);        //turn every third pixel off
-      }
-    }
   }
-  ledMode(23);
+  HUE=0; BRIGHTNESS=0; Solid();
+  ledMode(currentMode);
+  }
 }
 
-void sparkle(byte red, byte green, byte blue, int delayTime) {
-  int Pixel = random(NUM_LEDS);
-  setPixel(Pixel,red,green,blue);
-  showStrip();
-  while(millis() < time_now + delayTime){
-
+void Breath(int BreathBrightness, int z) {
+  for (int i = 0; i > -1; i = i + z) {
+    if (i == 250) {
+      z = -2;
+    }
+    HUE = 0; SATURATION = 255; BRIGHTNESS = BreathBrightness; Solid();
+    BreathBrightness = BreathBrightness + z;
   }
-  setPixel(Pixel,0,0,0);
 }
 
 void PowerOnBlink() {
@@ -326,7 +327,7 @@ void setPixel(int Pixel, byte red, byte green, byte blue) {
 void showStrip() {
  #ifdef ADAFRUIT_NEOPIXEL_H
    // NeoPixel
-   strip.show();
+   showStrip();
  #endif
  #ifndef ADAFRUIT_NEOPIXEL_H
    // FastLED

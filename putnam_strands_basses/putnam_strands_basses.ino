@@ -15,7 +15,7 @@
 #define NUM_LEDS    128
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define MAX_BRIGHTNESS 255
+#define MAX_BRIGHTNESS 128
 
 CRGBArray<NUM_LEDS> leds;
 
