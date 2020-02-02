@@ -11,8 +11,7 @@
 
 #include <FastLED.h>
 
-#define LED_PIN  12
-#define NUM_LEDS    64
+#define NUM_LEDS    256
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 #define MAX_BRIGHTNESS 255
@@ -63,7 +62,11 @@ unsigned long time_now = 0;
 
 void setup() {
   delay( 1000 ); // power-up safety delay
-  FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 12, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 11, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 10, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 9, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<LED_TYPE, 13, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
   FastLED.setBrightness(  BRIGHTNESS );
   pinMode(LED, OUTPUT);
 
@@ -232,19 +235,19 @@ void ledMode(int i) {
 
     // Show Events
     case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Powers On
-    case 10:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Pulse and Dim
-    case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
-    case 12:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Dim to Increase
-    case 13:HUE=0; BRIGHTNESS=0; Solid();break; // Monolith Red Pulse
-    case 14:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Red Sparkle
-    case 15:HUE=0; BRIGHTNESS=0; Solid();break;// Monolith Purple Theater Chase
+    case 9: powerOn();break;// Monolith Powers On
+    case 10:FadeInOut(0x93,0x00,0x00);;break;// Monolith Pulse and Dim
+    case 11:HUE=0; SATURATION=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
+    case 12:FadeInOut(0x93,0x00,0x00);break; // Monolith Dim to Increase
+    case 13:FadeInOut(0x93,0x00,0x00);break; // Monolith Red Pulse
+    case 14:sparkle(0x93,0x00,0x00,20);break;// Monolith Red Sparkle
+    case 15:theaterChase(0x66,0x33,0x99,20)break;// Monolith Purple Theater Chase
     case 16:HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
     case 17:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
     case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
     case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
-    case 20:theaterChase(0xFF,0x00,0x00, 50);break;  // Chaos Cycle All On w/EFX
-    case 21:sparkle(0xFF,0xFF,0xFF, 50);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
+    case 20:theaterChase(0x2e,0x8b,0x57, 20);break;  // Chaos Cycle All On w/EFX
+    case 21:sparkle(0xFF,0xFF,0xFF, 20);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
     case 22:SATURATION=0; BRIGHTNESS=200; Solid();break;// All colors on until end
     case 23:HUE=0; BRIGHTNESS=0; Solid();break;
   }
@@ -277,6 +280,12 @@ void FadeInOut(byte red, byte green, byte blue){
   }
 }
 
+void powerOn() {
+  for (int i = 0; i < NUM_LEDS; i++) {
+    setPixel(i, 0xFF,0x00,0x00)
+  }
+}
+
 void Breath(int BreathBrightness, int z) {
   for (int i = 0; i > -1; i = i + z) {
     if (i == 250) {
@@ -287,30 +296,8 @@ void Breath(int BreathBrightness, int z) {
   }
 }
 
-void RunningLights(byte red, byte green, byte blue, int delayTime) {
-  int Position = 0;
-  for (int j = 0; j < NUM_LEDS * 2; j++)
-  {
-    Position++; // = 0; //Position + Rate;
-    for (int i = 0; i < NUM_LEDS; i++) {
-      // sine wave, 3 offset waves make a rainbow!
-      //float level = sin(i+Position) * 127 + 128;
-      //setPixel(i,level,0,0);
-      //float level = sin(i+Position) * 127 + 128;
-      setPixel(i, ((sin(i + Position) * 127 + 128) / 255)*red,
-               ((sin(i + Position) * 127 + 128) / 255)*green,
-               ((sin(i + Position) * 127 + 128) / 255)*blue);
-    }
-
-    FastLED.show();
-    while(millis() < time_now + delayTime){
-
-    }
-  }
-}
-
 void theaterChase(byte red, byte green, byte blue, int delayTime) {
-  for (int j=0; j<100; j++) {  //do 10 cycles of chasing
+  for (int j = 0; j < 200; j++) {
     for (int q=0; q < 3; q++) {
       for (int i=0; i < NUM_LEDS; i=i+3) {
         setPixel(i+q, red, green, blue);    //turn every third pixel on
@@ -324,7 +311,7 @@ void theaterChase(byte red, byte green, byte blue, int delayTime) {
       }
     }
   }
-  ledMode(23);
+  HUE=0; BRIGHTNESS=0; Solid();
 }
 
 void sparkle(byte red, byte green, byte blue, int delayTime) {
