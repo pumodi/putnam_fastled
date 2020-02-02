@@ -104,7 +104,7 @@ void setup() {
 }
 
 void loop(){
-  tune_now = millis();
+  time_now = millis();
   if (rf69.waitAvailableTimeout(1)) {
     // Should be a message for us now
     uint8_t len = sizeof(buf);
@@ -327,7 +327,7 @@ void theaterChase(byte red, byte green, byte blue, int delayTime) {
   ledMode(23);
 }
 
-void Sparkle(byte red, byte green, byte blue, int delayTime) {
+void sparkle(byte red, byte green, byte blue, int delayTime) {
   int Pixel = random(NUM_LEDS);
   setPixel(Pixel,red,green,blue);
   showStrip();
