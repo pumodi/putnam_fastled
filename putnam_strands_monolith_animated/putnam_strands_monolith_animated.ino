@@ -10,7 +10,13 @@
 #define FASTLED_INTERRUPT_RETRY_COUNT 4
 
 #include <FastLED.h>
-#include <Ala.h>
+#include <Colors.h>
+#include <fonts.h>
+#include <MatrixNeoPatterns.h>
+#include <MatrixNeoPixel.h>
+#include <MatrixSnake.h>
+#include <NeoPatterns.h>
+#include <NeoPixel.h>
 
 #define NUM_LEDS    128
 #define LED_TYPE    WS2812B
@@ -237,7 +243,7 @@ void ledMode(int i) {
 
     // Show Events
     case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; SATURATION=255;BRIGHTNESS=0;FadeIn(10);break;// Monolith Powers On
+    case 9: HUE=0; SATURATION=255;BRIGHTNESS=200;break;// Monolith Powers On
     case 10:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Pulse and Dim
     case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
     case 12:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Dim to Increase
