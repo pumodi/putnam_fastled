@@ -269,22 +269,22 @@ void loop() {
         }
         oled.print("Convergence");
         clearPixels();
-        trellis.pixels.setPixelColor(0, 100,100,100);
-        trellis.pixels.setPixelColor(1, 255,51,51);
-        trellis.pixels.setPixelColor(2, 255,51,51);
-        trellis.pixels.setPixelColor(3, 255,51,51);
-        trellis.pixels.setPixelColor(4, 255,51,51);
-        trellis.pixels.setPixelColor(5, 255,51,51);
-        trellis.pixels.setPixelColor(6, 255,51,51);
+        trellis.pixels.setPixelColor(0, 0,0,0);
+        trellis.pixels.setPixelColor(1, 255,255,255);
+        trellis.pixels.setPixelColor(2, 255, 51, 51);
+        trellis.pixels.setPixelColor(3, 255,255,255);
+        trellis.pixels.setPixelColor(4, 255, 96, 55);
+        trellis.pixels.setPixelColor(5, 255, 51, 0);
+        trellis.pixels.setPixelColor(6, 255, 153, 255);
         trellis.pixels.setPixelColor(7, 204,0,204);
         trellis.pixels.setPixelColor(8, 0,128,255);
         trellis.pixels.setPixelColor(9, 0,255,0);
         trellis.pixels.setPixelColor(10, 0,255,0);
         trellis.pixels.setPixelColor(11, 0,255,0);
         trellis.pixels.setPixelColor(12, 255,255,0);
-        trellis.pixels.setPixelColor(13, 255,255,0);
-        trellis.pixels.setPixelColor(14, 255,255,0);
-        trellis.pixels.setPixelColor(15, 100,100,100);
+        trellis.pixels.setPixelColor(13, 0,0,0);
+        trellis.pixels.setPixelColor(14, 255,255,255);
+        trellis.pixels.setPixelColor(15, 0,0,0);
         trellis.pixels.show();
       }
 
@@ -408,7 +408,7 @@ void loop() {
               oled.setCursor(0,0);
               oled.print("Monlith");
               oled.setCursor(0,16);
-              oled.print("Pulse/Dim");
+              oled.print("LT Pink");
               oled.display();
             }
             if (x==3){ //button 4 sends button D command
@@ -426,7 +426,7 @@ void loop() {
               oled.setCursor(0,0);
               oled.print("Monolith");
               oled.setCursor(0,16);
-              oled.print("Warmup");
+              oled.print("Lt Red");
               oled.display();
             }
             if (x==5){ //button 6 sends button F command
@@ -435,7 +435,7 @@ void loop() {
               oled.setCursor(0,0);
               oled.print("Monolith");
               oled.setCursor(0,16);
-              oled.print("Red Pulse");
+              oled.print("Red");
               oled.display();
             }
             if (x==6){ //button 7 sends button G command
@@ -444,7 +444,7 @@ void loop() {
               oled.setCursor(0,0);
               oled.print("Monolith");
               oled.setCursor(0,16);
-              oled.print("Red Strobe");
+              oled.print("Pink");
               oled.display();
             }
             if (x==7){ //button 8 sends button H command
@@ -453,7 +453,7 @@ void loop() {
               oled.setCursor(0,0);
               oled.print("Monolith");
               oled.setCursor(0,16);
-              oled.print("FX");
+              oled.print("Purple");
               oled.display();
             }
             if (x==8){ //button 9 sends button Q command
@@ -462,7 +462,7 @@ void loop() {
               oled.setCursor(0,0);
               oled.print("Monolith");
               oled.setCursor(0,16);
-              oled.print("Solid Blue");
+              oled.print("Blue");
               oled.display();
             }
             if (x==9){ //button 10 sends button R command
@@ -487,7 +487,7 @@ void loop() {
               radiopacket[0] = 'T';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Mon + Quads");
+              oled.print("All");
               oled.setCursor(0,16);
               oled.print("Green");
               oled.display();
@@ -496,25 +496,23 @@ void loop() {
               radiopacket[0] = 'U';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("All On");
+              oled.print("All");
               oled.setCursor(0,16);
-              oled.print("With FX");
+              oled.print("Gold");
               oled.display();
             }
             if (x==13){ //button 14 sends button V command
               radiopacket[0] = 'V';
              oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("White");
-              oled.setCursor(0,16);
-              oled.print("Sequence");
+              oled.print("n/a");
               oled.display();
             }
             if (x==14){ //button 15 sends button W command
               radiopacket[0] = 'W';
               oled.clearDisplay();
               oled.setCursor(0,0);
-              oled.print("Solid");
+              oled.print("All");
               oled.setCursor(0,16);
               oled.print("White");
               oled.display();

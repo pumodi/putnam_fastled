@@ -12,10 +12,6 @@
 #include <FastLED.h>
 #include <Colors.h>
 #include <fonts.h>
-#include <MatrixNeoPatterns.h>
-#include <MatrixNeoPixel.h>
-#include <MatrixSnake.h>
-#include <NeoPatterns.h>
 #include <NeoPixel.h>
 
 #define NUM_LEDS    128
@@ -243,20 +239,20 @@ void ledMode(int i) {
 
     // Show Events
     case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; SATURATION=255;BRIGHTNESS=200;Solid();break;// Monolith Powers On
-    case 10:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Pulse and Dim
+    case 9: HUE=0; SATURATION=0; BRIGHTNESS=255; Solid();break;// Monolith Powers On
+    case 10:HUE=0; SATURATION=30; BRIGHTNESS=255; Solid();break;// Monolith Light Pink
     case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
-    case 12:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Dim to Increase
-    case 13:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Red Pulse
-    case 14:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Red Sparkle
-    case 15:HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Purple Theater Chase
-    case 16:HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
-    case 17:SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
-    case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
-    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
-    case 20:HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break; // Gold on all
-    case 21:HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break; // White Sequence.  Pulse/Chase/Pulse/Solid.
-    case 22:HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// SOLID WHITE
+    case 12:HUE=0; SATURATION=50; BRIGHTNESS=255; Solid();break; // Monolith Light Red
+    case 13:HUE=0; SATURATION=255; BRIGHTNESS=255; Solid();break; // Monolith Red
+    case 14:HUE=220; SATURATION=255; BRIGHTNESS=255; Solid();break;// MonolithPink
+    case 15:HUE=180; SATURATION=255; BRIGHTNESS=255; Solid();break;// Monolith Purple
+    case 16:HUE=140; SATURATION=255; BRIGHTNESS=255; Solid();break;// Monolith Solid Blue
+    case 17:HUE=100; SATURATION=255; BRIGHTNESS=255; Solid();break;// Monolith and Snares, Solid Green
+    case 18:HUE=100; SATURATION=255; BRIGHTNESS=255; Solid();break;// Add Basses, remove snares
+    case 19:HUE=100; SATURATION=255; BRIGHTNESS=255; Solid();break;// Add Quads, snares return
+    case 20:HUE=40; SATURATION=255; BRIGHTNESS=255; Solid();break; // Gold on all
+    case 21:break; // 
+    case 22:HUE=0; SATURATION=0; BRIGHTNESS=255; Solid();break;// SOLID WHITE
     case 23:HUE=0; BRIGHTNESS=0; Solid();break;// ALL OFF
   }
 }
