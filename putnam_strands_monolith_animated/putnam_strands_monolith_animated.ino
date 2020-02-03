@@ -273,8 +273,8 @@ void Breath() {
     breath_i = breath_i + 5;
   }
   else if (breath_i > 250) {
-    BreathBrightness = BreathBrightnes - breath_z;
-    if BreathBrightness = 0 {
+    BreathBrightness = BreathBrightness - breath_z;
+    if (BreathBrightness = 0) {
       breath_i = 0;
     }
   }
