@@ -2,21 +2,12 @@
 //Remote Effects Trigger Box Receiver
 //by John Park & Erin St Blaine
 //Modified by Jeffrey Brice for Rex Putnam High School Drumline in the 2020 winter show
-//
-// Button box receiver with NeoPixels using FastLED
-//
+
 //MIT License
 #define FASTLED_ALLOW_INTERRUPTS 1
 #define FASTLED_INTERRUPT_RETRY_COUNT 4
 
 #include <FastLED.h>
-#include <Colors.h>
-#include <fonts.h>
-#include <MatrixNeoPatterns.h>
-#include <MatrixNeoPixel.h>
-#include <MatrixSnake.h>
-#include <NeoPatterns.h>
-#include <NeoPixel.h>
 
 #define NUM_LEDS    128
 #define LED_TYPE    WS2812B
@@ -41,13 +32,13 @@ TBlendType    currentBlending;
 int HUE = 200;    // starting color
 int SATURATION = 255;
 int BRIGHTNESS = 200;
-int startUpHasRun = 0;
-int currentMode = 0;
 
-uint16_t frame = 0;      //I think I might be able to move this variable to the void loop() scope and save some CPU
-uint16_t animateSpeed = 100;            //Number of frames to increment per loop
-uint8_t  animation = 10;    //Active animation
-uint8_t brightness = 50;    //Global brightness percentage
+/*************Variables for Loop Aniamtions*****************/
+
+int fade_k = 255;
+int breath_i = 0;
+int breath_z = 2;
+int BreathBrightness = 0;
 
 /************ Radio Setup ***************/
 
@@ -64,9 +55,6 @@ uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 RH_RF69 rf69(RFM69_CS, RFM69_INT);
 
 bool oldState = HIGH;
-
-int period = 1000;
-unsigned long time_now = 0;
 
 void setup() {
   delay( 1000 ); // power-up safety delay
@@ -115,7 +103,6 @@ void setup() {
 }
 
 void loop(){
-  time_now = millis();
   if (rf69.waitAvailableTimeout(1)) {
     // Should be a message for us now
     uint8_t len = sizeof(buf);
@@ -135,7 +122,6 @@ void loop(){
       ledMode(1);
       radiopacket[8] = 'B';
     }
-
      else if (buf[0]=='C'){ //the letter sent from the button
       ledMode(2);
        radiopacket[8] = 'C';
@@ -144,11 +130,10 @@ void loop(){
       ledMode(3);
       radiopacket[8] = 'D';
     }
-         else if (buf[0]=='E'){ //the letter sent from the button
+     else if (buf[0]=='E'){ //the letter sent from the button
       ledMode(4);
       radiopacket[8] = 'E';
     }
-
      else if (buf[0]=='F'){ //the letter sent from the button
       ledMode(5);
        radiopacket[8] = 'F';
@@ -193,11 +178,11 @@ void loop(){
       ledMode(15);
       radiopacket[8] = 'P';
     }
-         else if (buf[0]=='Q'){ //the letter sent from the button
+     else if (buf[0]=='Q'){ //the letter sent from the button
       ledMode(16);
       radiopacket[8] = 'Q';
     }
-         else if (buf[0]=='R'){ //the letter sent from the button
+     else if (buf[0]=='R'){ //the letter sent from the button
       ledMode(17);
       radiopacket[8] = 'R';
     }
@@ -205,27 +190,26 @@ void loop(){
       ledMode(18);
       radiopacket[8] = 'S';
     }
-         else if (buf[0]=='T'){ //the letter sent from the button
+     else if (buf[0]=='T'){ //the letter sent from the button
       ledMode(19);
       radiopacket[8] = 'T';
     }
-             else if (buf[0]=='U'){ //the letter sent from the button
+     else if (buf[0]=='U'){ //the letter sent from the button
       ledMode(20);
       radiopacket[8] = 'U';
     }
-             else if (buf[0]=='V'){ //the letter sent from the button
+     else if (buf[0]=='V'){ //the letter sent from the button
       ledMode(21);
       radiopacket[8] = 'V';
     }
-             else if (buf[0]=='W'){ //the letter sent from the button
+     else if (buf[0]=='W'){ //the letter sent from the button
       ledMode(22);
       radiopacket[8] = 'W';
     }
-             else if (buf[0]=='X'){ //the letter sent from the button
+     else if (buf[0]=='X'){ //the letter sent from the button
       ledMode(23);
       radiopacket[8] = 'X';
     }
-    digitalWrite(LED, LOW);
   }
 }
 
@@ -243,19 +227,19 @@ void ledMode(int i) {
 
     // Show Events
     case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; SATURATION=255;BRIGHTNESS=200;break;// Monolith Powers On
-    case 10:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Pulse and Dim
+    case 9: HUE=0; SATURATION=255;BRIGHTNESS=200;FadeIn();break;// Monolith Powers On
+    case 10:Breath();break;// Monolith Pulse and Dim
     case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
-    case 12:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Dim to Increase
-    case 13:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break; // Monolith Red Pulse
-    case 14:HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Red Sparkle
-    case 15:HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Purple Theater Chase
+    case 12:// Monolith Dim to Increase
+    case 13:// Monolith Red Pulse
+    case 14:// Monolith Red Sparkle
+    case 15:// Monolith Purple Theater Chase
     case 16:HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
     case 17:SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
     case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
     case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
     case 20:HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;break;  // Gold on all
-    case 21:colorWipe(0xFF,0xFF,0xFF,0);break;  // White Sequence.  Pulse/Chase/Pulse/Solid.
+    case 21:break;  // n/a
     case 22:HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// SOLID WHITE
     case 23:HUE=0; BRIGHTNESS=0; Solid();break;// ALL OFF
   }
@@ -268,48 +252,33 @@ void Solid() {
 }
 
 // Animations --------------------------------------------------
-void FadeIn(int SpeedDelay){
-  while(millis() < time_now + SpeedDelay){
+void FadeIn(){
     BRIGHTNESS++;
     fill_solid(leds, NUM_LEDS, CHSV(0, 255, 255));
     FastLED.show();
-  }
 }
 
 void FadeOut(byte red, byte green, byte blue){
   float r, g, b;
-  
-  for(int k = 255; k >= 0; k=k-2) {
-    r = (k/256.0)*red;
-    g = (k/256.0)*green;
-    b = (k/256.0)*blue;
-    setAll(r,g,b);
-    showStrip();
-  }
+  r = (fade_k/256.0)*red;
+  g = (fade_k/256.0)*green;
+  b = (fade_k/256.0)*blue;
+  setAll(r,g,b);
+  showStrip();
 }
 
-void colorWipe(byte red, byte green, byte blue, int SpeedDelay) {
-  while (currentMode = 14) {
-  for(uint16_t i=0; i<NUM_LEDS; i++) {
-      setPixel(i, red, green, blue);
-      showStrip();
-     while(millis() < time_now + SpeedDelay){
-
-      }
+void Breath() {
+  if (breath_i < 250) {
+    BreathBrightness = BreathBrightness + 5;
+    breath_i = breath_i + 5;
   }
-  HUE=0; BRIGHTNESS=0; Solid();
-  ledMode(currentMode);
-  }
-}
-
-void Breath(int BreathBrightness, int z) {
-  for (int i = 0; i > -1; i = i + z) {
-    if (i == 250) {
-      z = -2;
+  else if (breath_i > 250) {
+    BreathBrightness = BreathBrightnes - breath_z;
+    if BreathBrightness = 0 {
+      breath_i = 0;
     }
-    HUE = 0; SATURATION = 255; BRIGHTNESS = BreathBrightness; Solid();
-    BreathBrightness = BreathBrightness + z;
   }
+  HUE = 0; SATURATION = 255; BRIGHTNESS = BreathBrightness; Solid();
 }
 
 void PowerOnBlink() {
