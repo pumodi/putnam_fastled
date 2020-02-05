@@ -12,7 +12,7 @@
 #define NUM_LEDS    128
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
-#define MAX_BRIGHTNESS 156
+#define MAX_BRIGHTNESS 255
 
 CRGBArray<NUM_LEDS> leds;
 
@@ -39,6 +39,7 @@ int fade_k = 255;
 int breath_i = 0;
 int breath_z = 2;
 int BreathBrightness = 0;
+unsigned long time_now = 0;
 
 /************ Radio Setup ***************/
 
@@ -103,6 +104,7 @@ void setup() {
 }
 
 void loop(){
+  time_now = millis();
   if (rf69.waitAvailableTimeout(1)) {
     // Should be a message for us now
     uint8_t len = sizeof(buf);
@@ -216,58 +218,65 @@ void loop(){
 void ledMode(int i) {
   switch(i){
     // Solids
-    case 0: HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();break;// red
-    case 1: HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;// gold
-    case 2: HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// green
-    case 3: HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Blue
-    case 4: HUE=180; SATURATION=255; BRIGHTNESS=200; Solid();break;// purple
-    case 5: HUE=220; SATURATION=255; BRIGHTNESS=200; Solid();break;// pink
-    case 6: HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// white
-    case 7: HUE=0; BRIGHTNESS=0; Solid();break;// off
+    case 0: Solid(0,255,200);break;// red
+    case 1: Solid(40,255,200);break;// gold
+    case 2: Solid(100,255,200);break;// green
+    case 3: Solid(140,255,200);break;// Blue
+    case 4: Solid(180,255,200);break;// purple
+    case 5: Solid(220,255,200);break;// pink
+    case 6: Solid(0,0,200);break;// white
+    case 7: Solid(0,0,0);break;// off
 
     // Show Events
-    case 8: HUE=0; BRIGHTNESS=0; Solid();break;// Show Start. Lights Off
-    case 9: HUE=0; SATURATION=255;BRIGHTNESS=200;FadeIn();break;// Monolith Powers On
+    case 8: Solid(0,0,0);break;// Show Start. Lights Off
+    case 9: FadeIn(0xFF,0xFF,0xFF,50,10);break;// Monolith Powers On
     case 10:Breath();break;// Monolith Pulse and Dim
-    case 11:HUE=0; BRIGHTNESS=0; Solid();break; // Snare Solo MS115
+    case 11:Solid(0,0,0);break; // Snare Solo MS115
     case 12:// Monolith Dim to Increase
     case 13:// Monolith Red Pulse
     case 14:// Monolith Red Sparkle
     case 15:// Monolith Purple Theater Chase
-    case 16:HUE=140; SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith Solid Blue
-    case 17:SATURATION=255; BRIGHTNESS=200; Solid();break;// Monolith and Snares, Solid Green
-    case 18:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Basses, remove snares
-    case 19:HUE=100; SATURATION=255; BRIGHTNESS=200; Solid();break;// Add Quads, snares return
-    case 20:HUE=40; SATURATION=255; BRIGHTNESS=200; Solid();break;break;  // Gold on all
+    case 16:Solid(140,255,200);break;// Monolith Solid Blue
+    case 17:Solid(100,255,200);break;// Monolith and Snares, Solid Green
+    case 18:Solid(100,255,200);break;// Add Basses, remove snares
+    case 19:Solid(100,255,200);break;// Add Quads, snares return
+    case 20:Solid(40,255,200);break;break;  // Gold on all
     case 21:break;  // n/a
-    case 22:HUE=0; SATURATION=0; BRIGHTNESS=200; Solid();break;// SOLID WHITE
-    case 23:HUE=0; BRIGHTNESS=0; Solid();break;// ALL OFF
+    case 22:Solid(0,0,200);break;// SOLID WHITE
+    case 23:Solid(0,0,0);break;// ALL OFF
   }
 }
 
 // SOLID ----------------------------------------------------
-void Solid() {
+void Solid(int k_hue, int k_saturation, int k_brightness) {
+  HUE = k_hue;
+  SATURATION = k_saturation;
+  BRIGHTNESS = k_brightness;
    fill_solid(leds, NUM_LEDS, CHSV(HUE, SATURATION, BRIGHTNESS));
    FastLED.show();
 }
 
 // Animations --------------------------------------------------
-void FadeIn(){
-    BRIGHTNESS++;
-    fill_solid(leds, NUM_LEDS, CHSV(0, 255, 255));
+void FadeIn(byte red, byte green, byte blue,delayTime, fade_interval){
+  fill_solid(leds, NUM_LEDS, CHSV(0, 255, 255));
+  if (BRIGHTNESS < 255) {
+    BRIGHTNESS = BRIGHTNESS + fade_interval;
     FastLED.show();
+    while(millis() < time_now + delayTime){}
+  }
 }
 
-void FadeOut(byte red, byte green, byte blue){
+void FadeOut(byte red, byte green, byte blue, int delayTime, int fade_interval){
   float r, g, b;
   r = (fade_k/256.0)*red;
   g = (fade_k/256.0)*green;
   b = (fade_k/256.0)*blue;
   setAll(r,g,b);
   showStrip();
+  while(millis() < time_now + delayTime){}
 }
 
-void Breath() {
+void Breath(int k_hue, int k_saturation, int delayTime) {
   if (breath_i < 250) {
     BreathBrightness = BreathBrightness + 5;
     breath_i = breath_i + 5;
@@ -278,11 +287,17 @@ void Breath() {
       breath_i = 0;
     }
   }
-  HUE = 0; SATURATION = 255; BRIGHTNESS = BreathBrightness; Solid();
+  Solid(0,255,BreathBrightness);
+  while(millis() < time_now + delayTime){}
 }
 
 void PowerOnBlink() {
-  HUE=0; SATURATION=255; BRIGHTNESS=200; Solid();delay(150);HUE=0; BRIGHTNESS=0; Solid();delay(150);HUE=200; SATURATION=255; BRIGHTNESS=200; Solid(); delay(150);HUE=0; BRIGHTNESS=0; Solid();delay(150);HUE=400; SATURATION=255; BRIGHTNESS=200; Solid(); delay(150);HUE=0; BRIGHTNESS=0; Solid();
+  Solid(0,255,200);delay(100);
+  Solid(0,0,200);delay(100);
+  Solid(0,255,200); delay(100);
+  Solid(0,0,0);delay(100);
+  Solid(400,255,200); delay(100);
+  Solid(0,0,0);
 }
 
 // Utility Functions
