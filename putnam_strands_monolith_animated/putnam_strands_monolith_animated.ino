@@ -2,28 +2,23 @@
 //Remote Effects Trigger Box Receiver
 //by John Park & Erin St Blaine
 //Modified by Jeffrey Brice for Rex Putnam High School Drumline in the 2020 winter show
-
 //MIT License
-#define FASTLED_ALLOW_INTERRUPTS 1
-#define FASTLED_INTERRUPT_RETRY_COUNT 4
-
 #include <FastLED.h>
+#include <SPI.h>
+#include <RH_RF69.h>
+#include <Wire.h>
+
+CRGBArray<NUM_LEDS> leds;
 
 #define NUM_LEDS    128
 #define LED_TYPE    WS2812B
 #define COLOR_ORDER GRB
 #define MAX_BRIGHTNESS 255
-
-CRGBArray<NUM_LEDS> leds;
-
-#include <SPI.h>
-#include <RH_RF69.h>
-#include <Wire.h>
-
 #define LED 13
+#define FASTLED_ALLOW_INTERRUPTS 1
+#define FASTLED_INTERRUPT_RETRY_COUNT 4
 
 /********** NeoPixel Setup *************/
-
 #define UPDATES_PER_SECOND 1000
 CRGBPalette16 currentPalette( CRGB::Black);
 CRGBPalette16 targetPalette( PartyColors_p );
@@ -34,7 +29,6 @@ int SATURATION = 255;
 int BRIGHTNESS = 200;
 
 /*************Variables for Loop Aniamtions*****************/
-
 int fade_k = 255;
 int breath_i = 0;
 int breath_z = 2;
@@ -42,14 +36,11 @@ int BreathBrightness = 0;
 unsigned long time_now = 0;
 
 /************ Radio Setup ***************/
-
 // Change to 434.0 or other frequency, must match RX's freq!
 #define RF69_FREQ 915.0
-
-  #define RFM69_CS      8
-  #define RFM69_INT     3
-  #define RFM69_RST     4
-
+#define RFM69_CS      8
+#define RFM69_INT     3
+#define RFM69_RST     4
 uint8_t buf[RH_RF69_MAX_MESSAGE_LEN];
 
 // Singleton instance of the radio driver
@@ -109,108 +100,119 @@ void loop(){
     // Should be a message for us now
     uint8_t len = sizeof(buf);
 
-    if (! rf69.recv(buf, &len)) {
-      Serial.println("Receive failed");
-      return;
-    }
+// if (! rf69.recv(buf, &len)) {Serial.println("Receive failed");return;}
 
     char radiopacket[20] = "Button #";//prep reply message to send
 
-    if (buf[0]=='A'){ //the letter sent from the button
-      ledMode(0);
-      radiopacket[8] = 'A';
-    }
-     else if (buf[0]=='B'){ //the letter sent from the button
-      ledMode(1);
-      radiopacket[8] = 'B';
-    }
-     else if (buf[0]=='C'){ //the letter sent from the button
-      ledMode(2);
-       radiopacket[8] = 'C';
-    }
-     else if (buf[0]=='D'){ //the letter sent from the button
-      ledMode(3);
-      radiopacket[8] = 'D';
-    }
-     else if (buf[0]=='E'){ //the letter sent from the button
-      ledMode(4);
-      radiopacket[8] = 'E';
-    }
-     else if (buf[0]=='F'){ //the letter sent from the button
-      ledMode(5);
-       radiopacket[8] = 'F';
-    }
-     else if (buf[0]=='G'){ //the letter sent from the button
-      ledMode(6);
-      radiopacket[8] = 'G';
-    }
-     else if (buf[0]=='H'){ //the letter sent from the button
-      ledMode(7);
-      radiopacket[8] = 'H';
-    }
-     else if (buf[0]=='I'){ //the letter sent from the button
-      ledMode(8);
-       radiopacket[8] = 'I';
-    }
-     else if (buf[0]=='J'){ //the letter sent from the button
-      ledMode(9);
-      radiopacket[8] = 'J';
-    }
-     else if (buf[0]=='K'){ //the letter sent from the button
-      ledMode(10);
-      radiopacket[8] = 'K';
-    }
-     else if (buf[0]=='L'){ //the letter sent from the button
-      ledMode(11);
-       radiopacket[8] = 'L';
-    }
-     else if (buf[0]=='M'){ //the letter sent from the button
-      ledMode(12);
-      radiopacket[8] = 'M';
-    }
-     else if (buf[0]=='N'){ //the letter sent from the button
-      ledMode(13);
-      radiopacket[8] = 'N';
-    }
-     else if (buf[0]=='O'){ //the letter sent from the button
-      ledMode(14);
-      radiopacket[8] = 'O';
-    }
-     else if (buf[0]=='P'){ //the letter sent from the button
-      ledMode(15);
-      radiopacket[8] = 'P';
-    }
-     else if (buf[0]=='Q'){ //the letter sent from the button
-      ledMode(16);
-      radiopacket[8] = 'Q';
-    }
-     else if (buf[0]=='R'){ //the letter sent from the button
-      ledMode(17);
-      radiopacket[8] = 'R';
-    }
-      else if (buf[0]=='S'){ //the letter sent from the button
-      ledMode(18);
-      radiopacket[8] = 'S';
-    }
-     else if (buf[0]=='T'){ //the letter sent from the button
-      ledMode(19);
-      radiopacket[8] = 'T';
-    }
-     else if (buf[0]=='U'){ //the letter sent from the button
-      ledMode(20);
-      radiopacket[8] = 'U';
-    }
-     else if (buf[0]=='V'){ //the letter sent from the button
-      ledMode(21);
-      radiopacket[8] = 'V';
-    }
-     else if (buf[0]=='W'){ //the letter sent from the button
-      ledMode(22);
-      radiopacket[8] = 'W';
-    }
-     else if (buf[0]=='X'){ //the letter sent from the button
-      ledMode(23);
-      radiopacket[8] = 'X';
+    switch(buf[0]){
+      case 'A':
+        ledMode(0);
+        radiopacket[8] = 'A';
+        break;
+      case 'B':
+        ledMode(1);
+        radiopacket[8] = 'B';
+        break;
+      case 'C':
+        ledMode(2);
+        radiopacket[8] = 'C';
+        break;
+      case 'D':
+        ledMode(3);
+        radiopacket[8] = 'D';
+        break;
+      case 'E':
+        ledMode(4);
+        radiopacket[8] = 'E';
+        break;
+      case 'F':
+        ledMode(5);
+        radiopacket[8] = 'F';
+        break;
+      case 'G':
+        ledMode(6);
+        radiopacket[8] = 'G';
+        break;
+      case 'H':
+        ledMode(7);
+        radiopacket[8] = 'H';
+        break;
+      case 'I':
+        ledMode(8);
+        radiopacket[8] = 'I';
+        break;
+      case 'J':
+        ledMode(9);
+        radiopacket[8] = 'J';
+        break;
+      case 'K':
+        ledMode(10);
+        radiopacket[8] = 'K';
+        break;
+      case 'L':
+        ledMode(11);
+        radiopacket[8] = 'L'';
+        break;
+      case 'M':
+        ledMode(12);
+        radiopacket[8] = 'M';
+        break;
+      case 'N':
+        ledMode(13);
+        radiopacket[8] = 'N';
+        break;
+      case 'O':
+        ledMode(14);
+        radiopacket[8] = 'O';
+        break;
+      case 'P':
+        ledMode(15);
+        radiopacket[8] = 'P';
+        break;
+      case 'Q':
+        ledMode(16);
+        radiopacket[8] = 'Q';
+        break;
+      case 'R':
+        ledMode(17);
+        radiopacket[8] = 'R';
+        break;
+      case 'S':
+        ledMode(18);
+        radiopacket[8] = 'S';
+        break;
+      case 'T':
+        ledMode(19);
+        radiopacket[8] = 'T';
+        break;
+      case 'U':
+        ledMode(20);
+        radiopacket[8] = 'U';
+        break;
+      case 'V':
+        ledMode(21);
+        radiopacket[8] = 'V';
+        break;
+      case 'W':
+        ledMode(22);
+        radiopacket[8] = 'W';
+        break;
+      case 'X':
+        ledMode(23);
+        radiopacket[8] = 'X';
+        break;
+      case 'Y':
+        ledMode(24);
+        radiopacket[8] = 'Y';
+        break;
+      case 'Z':
+        ledMode(25);
+        radiopacket[8] = 'Z';
+        break;
+      default:
+        ledMode(0);
+        radiopacket[8] = 'A';
+        break;
     }
   }
 }
@@ -257,6 +259,15 @@ void Solid(int k_hue, int k_saturation, int k_brightness) {
 }
 
 // Animations --------------------------------------------------
+void PowerOnBlink() {
+  Solid(0,255,200);delay(100);
+  Solid(0,0,200);delay(100);
+  Solid(0,255,200); delay(100);
+  Solid(0,0,0);delay(100);
+  Solid(400,255,200); delay(100);
+  Solid(0,0,0);
+}
+
 void FadeIn(byte red, byte green, byte blue,delayTime, fade_interval){
   fill_solid(leds, NUM_LEDS, CHSV(0, 255, 255));
   if (BRIGHTNESS < 255) {
@@ -289,15 +300,6 @@ void Breath(int k_hue, int k_saturation, int delayTime) {
   }
   Solid(0,255,BreathBrightness);
   while(millis() < time_now + delayTime){}
-}
-
-void PowerOnBlink() {
-  Solid(0,255,200);delay(100);
-  Solid(0,0,200);delay(100);
-  Solid(0,255,200); delay(100);
-  Solid(0,0,0);delay(100);
-  Solid(400,255,200); delay(100);
-  Solid(0,0,0);
 }
 
 // Utility Functions
